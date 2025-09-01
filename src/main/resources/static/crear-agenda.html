@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Turno - Amican</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Removed duplicate "Volver" button since user can click the logo icon to return to dashboard -->
+        <div class="form-header">
+            <h2><i class="fas fa-calendar-plus"></i> Crear Nuevo Turno</h2>
+        </div>
+
+        <form id="turnoForm" class="turno-form">
+            <!-- Sección Dueños -->
+            <div class="form-section">
+                <div class="section-header">
+                    <h3><i class="fas fa-user"></i> Datos del Dueño</h3>
+                    <button type="button" class="btn-add" onclick="agregarDueno()">
+                        <i class="fas fa-plus"></i> Agregar Dueño
+                    </button>
+                </div>
+                <div id="duenosContainer">
+                    <div class="dueno-card">
+                        <div class="card-header">
+                            <h4>Dueño 1</h4>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Nombre</label>
+                                <input type="text" class="field-input" name="nombre_dueno_1" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Apellido</label>
+                                <input type="text" class="field-input" name="apellido_dueno_1" required>
+                            </div>
+                            <div class="form-group">
+                                <label>DNI</label>
+                                <input type="text" class="field-input" name="dni_dueno_1" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Número de Celular</label>
+                                <input type="tel" class="field-input" name="celular_dueno_1" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección Mascotas -->
+            <div class="form-section">
+                <div class="section-header">
+                    <h3><i class="fas fa-paw"></i> Datos de la Mascota</h3>
+                    <button type="button" class="btn-add" onclick="agregarMascota()">
+                        <i class="fas fa-plus"></i> Agregar Mascota
+                    </button>
+                </div>
+                <div id="mascotasContainer">
+                    <div class="mascota-card">
+                        <div class="card-header">
+                            <h4>Mascota 1</h4>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Nombre del Perro</label>
+                                <input type="text" class="field-input" name="nombre_mascota_1" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Raza</label>
+                                <input type="text" class="field-input" name="raza_mascota_1" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Tamaño</label>
+                                <input type="text" class="field-input" name="tamano_mascota_1" placeholder="Ej: Pequeño, Mediano, Grande" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección Precio y Descripción -->
+            <div class="form-section">
+                <div class="section-header">
+                    <h3><i class="fas fa-dollar-sign"></i> Detalles del Turno</h3>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Precio del Servicio</label>
+                        <div class="price-input">
+                            <span class="currency">$</span>
+                            <input type="number" class="field-input" name="precio" min="0" step="0.01" required>
+                        </div>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Descripción del Turno</label>
+                        <textarea class="field-input" name="descripcion" rows="4" placeholder="Describe el servicio a realizar..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="form-actions">
+                <!-- Removed duplicate "Cancelar" button since user can navigate back using the logo -->
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-save"></i> Guardar Turno
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script src="js/crear-agenda.js"></script>
+</body>
+</html>
