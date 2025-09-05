@@ -17,9 +17,7 @@
                 <i class="fas fa-bars"></i>
             </button>
         </div>
-
         <nav class="sidebar-nav">
-            <!-- Simplified navigation without horizontal dropdown -->
             <div class="nav-group">
                 <button class="nav-item dropdown-toggle" data-section="agenda">
                     <i class="fas fa-calendar-alt"></i>
@@ -27,36 +25,42 @@
                     <i class="fas fa-chevron-down dropdown-arrow"></i>
                 </button>
                 <div class="nav-dropdown">
-                    <button class="nav-subitem" data-section="agenda-manage">
+                    <a th:href="@{/turnos/ver}" class="nav-subitem" data-section="agenda-manage">
                         <i class="fas fa-list"></i>
                         <span class="nav-text">Ver Agenda</span>
-                    </button>
-                    <button class="nav-subitem" data-section="agenda-create">
+                    </a>
+                    <a th:href="@{/turnos/crear}" class="nav-subitem" data-section="agenda-create">
                         <i class="fas fa-plus"></i>
                         <span class="nav-text">Nueva Cita</span>
-                    </button>
+                    </a>
                 </div>
             </div>
-
             <div class="nav-group">
-                <button class="nav-item dropdown-toggle" data-section="empleados">
+                <button class="nav-item dropdown-toggle" data-section="clientes">
                     <i class="fas fa-users"></i>
-                    <span class="nav-text">Empleados</span>
+                    <span class="nav-text">Clientes</span>
                     <i class="fas fa-chevron-down dropdown-arrow"></i>
                 </button>
                 <div class="nav-dropdown">
-                    <button class="nav-subitem" data-section="empleados-list">
+                    <a th:href="@{/duenios/ver}" class="nav-subitem" data-section="clientes-list">
                         <i class="fas fa-list"></i>
-                        <span class="nav-text">Ver Empleados</span>
-                    </button>
-                    <button class="nav-subitem" data-section="empleados-add">
+                        <span class="nav-text">Ver Clientes</span>
+                    </a>
+                    <a th:href="@{/duenios/crear}" class="nav-subitem" data-section="clientes-create">
                         <i class="fas fa-user-plus"></i>
-                        <span class="nav-text">Agregar Empleado</span>
-                    </button>
+                        <span class="nav-text">Crear Cliente</span>
+                    </a>
+                    <a th:href="@{/mascotas/ver}" class="nav-subitem" data-section="mascotas-list">
+                        <i class="fas fa-dog"></i>
+                        <span class="nav-text">Ver Mascotas</span>
+                    </a>
+                    <a th:href="@{/mascotas/crear}" class="nav-subitem" data-section="mascotas-create">
+                        <i class="fas fa-plus"></i>
+                        <span class="nav-text">Crear Mascota</span>
+                    </a>
                 </div>
             </div>
         </nav>
-
         <div class="sidebar-footer">
             <div class="system-info">
                 <p class="system-title">Sistema Amican</p>
@@ -65,16 +69,19 @@
         </div>
     </aside>
 
+    <!-- Overlay para móviles -->
+    <div id="overlay" class="overlay"></div>
+
     <!-- Main Content -->
     <div class="main-content">
         <!-- Header -->
         <header class="header">
             <div class="header-left">
-                <!-- Removed mobile menu toggle button -->
-
+                <button id="mobileToggle" class="mobile-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
                 <button id="logoBtn" class="logo-container">
                     <div class="logo-wrapper">
-                        <!-- Doubled logo size from 32px to 64px -->
                         <img th:src="@{/images/logo.png}" alt="Amican Logo" class="logo">
                     </div>
                     <div class="logo-info">
@@ -83,12 +90,10 @@
                     </div>
                 </button>
             </div>
-
             <div class="header-right">
                 <button class="notification-btn">
                     <i class="fas fa-bell"></i>
                 </button>
-
                 <div class="user-menu">
                     <button id="userMenuBtn" class="user-menu-btn">
                         <div class="user-avatar">
@@ -101,18 +106,15 @@
                     </button>
                     <div id="userDropdown" class="user-dropdown">
                         <button class="dropdown-item" data-section="usuario">
-                            <i class="fas fa-user"></i>
-                            Mi Perfil
+                            <i class="fas fa-user"></i> Mi Perfil
                         </button>
                         <button class="dropdown-item">
-                            <i class="fas fa-cog"></i>
-                            Configuración
+                            <i class="fas fa-cog"></i> Configuración
                         </button>
-                            <div class="dropdown-separator"></div>
-                            <a class="dropdown-item logout" href="/logout">
-                            <i class="fas fa-sign-out-alt"></i>
-                            Cerrar sesión
-                            </a>
+                        <div class="dropdown-separator"></div>
+                        <button class="dropdown-item logout">
+                            <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                        </button>
                     </div>
                 </div>
             </div>
@@ -133,717 +135,111 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Removed duplicate dashboard-summary section -->
-
-                <!-- Reduced metrics grid to smaller cards -->
-                <div class="metrics-grid">
-                    <div class="metric-card compact">
-                        <div class="metric-header">
-                            <span class="metric-title">Turnos Activos</span>
-                            <div class="metric-icon appointments">
-                                <i class="fas fa-calendar-alt"></i>
-                            </div>
-                        </div>
-                        <div class="metric-value">5</div>
-                        <div class="metric-description">2 en proceso, 3 pendientes</div>
-                    </div>
-
-                    <div class="metric-card compact">
-                        <div class="metric-header">
-                            <span class="metric-title">Citas de Hoy</span>
-                            <div class="metric-icon today">
-                                <i class="fas fa-calendar-day"></i>
-                            </div>
-                        </div>
-                        <div class="metric-value">4</div>
-                        <div class="metric-description">Agenda del día actual</div>
-                    </div>
-                </div>
-
-                <div class="dashboard-details">
-                    <div class="appointments-today">
-                        <h3>Citas de Hoy</h3>
-                        <p class="section-subtitle">Agenda del día actual - Todo bajo control</p>
-                        <div class="appointments-list">
-                            <div class="appointment-item">
-                                <div class="appointment-time">09:00</div>
-                                <div class="appointment-info">
-                                    <p class="client-name">María González</p>
-                                    <p class="service-info">Corte y baño • <strong>Max (Golden)</strong></p>
-                                </div>
-                                <!-- Improved status badges with better styling -->
-                                <div class="appointment-status confirmed">Confirmada</div>
-                            </div>
-                            <div class="appointment-item">
-                                <div class="appointment-time">10:30</div>
-                                <div class="appointment-info">
-                                    <p class="client-name">Carlos Ruiz</p>
-                                    <p class="service-info">Baño medicinal • <strong>Luna (Poodle)</strong></p>
-                                </div>
-                                <div class="appointment-status in-progress">En proceso</div>
-                            </div>
-                            <div class="appointment-item">
-                                <div class="appointment-time">12:00</div>
-                                <div class="appointment-info">
-                                    <p class="client-name">Ana López</p>
-                                    <p class="service-info">Corte de uñas • <strong>Rocky (Bulldog)</strong></p>
-                                </div>
-                                <div class="appointment-status pending">Pendiente</div>
-                            </div>
-                            <div class="appointment-item">
-                                <div class="appointment-time">14:30</div>
-                                <div class="appointment-info">
-                                    <p class="client-name">Pedro Martín</p>
-                                    <p class="service-info">Desparasitación • <strong>Bella (Labrador)</strong></p>
-                                </div>
-                                <div class="appointment-status confirmed">Confirmada</div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </section>
-
-            <!-- Agenda Section -->
-            <section id="agenda-section" class="section">
-                <!-- Asegurar que las subsecciones tengan display inicial correcto -->
-                <!-- Create Agenda Form -->
-                <div id="agenda-create" class="subsection" style="display: none;">
-                    <div class="section-header">
-                        <h2><i class="fas fa-calendar-plus"></i> Crear Nueva Cita</h2>
-                        <button id="backToAgendaBtn" class="btn-secondary">
-                            <i class="fas fa-arrow-left"></i> Volver
-                        </button>
-                    </div>
-
-                    <form id="agendaForm" class="appointment-form">
-                        <!-- Dueños Section -->
-                        <div class="form-section">
-                            <div class="section-title">
-                                <h3><i class="fas fa-user"></i> Información del Dueño</h3>
-                            </div>
-                            <div id="ownersContainer">
-                                <div class="owner-group" data-owner="1">
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="ownerName1">Nombre</label>
-                                            <input type="text" id="ownerName1" name="ownerName1" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="ownerLastName1">Apellido</label>
-                                            <input type="text" id="ownerLastName1" name="ownerLastName1" required>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="ownerDni1">DNI</label>
-                                            <input type="text" id="ownerDni1" name="ownerDni1" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="ownerPhone1">Número de Celular</label>
-                                            <input type="tel" id="ownerPhone1" name="ownerPhone1" required>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <button type="button" id="addOwnerBtn" class="btn-add">
-                                <i class="fas fa-plus"></i> Agregar otro dueño
-                            </button>
-                        </div>
-
-                        <!-- Mascotas Section -->
-                        <div class="form-section">
-                            <div class="section-title">
-                                <h3><i class="fas fa-dog"></i> Información de la Mascota</h3>
-                            </div>
-                            <div id="petsContainer">
-                                <div class="pet-group" data-pet="1">
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="petName1">Nombre del Perro</label>
-                                            <input type="text" id="petName1" name="petName1" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="petBreed1">Raza</label>
-                                            <input type="text" id="petBreed1" name="petBreed1" required>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="petSize1">Tamaño</label>
-                                            <input type="text" id="petSize1" name="petSize1" placeholder="Ej: Pequeño, Mediano, Grande, etc." required>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <button type="button" id="addPetBtn" class="btn-add">
-                                <i class="fas fa-plus"></i> Agregar otra mascota
-                            </button>
-                        </div>
-
-                        <!-- Precio y Descripción -->
-                        <div class="form-section">
-                            <div class="section-title">
-                                <h3><i class="fas fa-clipboard-list"></i> Detalles del Turno</h3>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="appointmentPrice">Precio del Servicio</label>
-                                    <div class="price-input">
-                                        <span class="currency">$</span>
-                                        <input type="number" id="appointmentPrice" name="appointmentPrice" min="0" step="0.01" required>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="appointmentDate">Fecha y Hora</label>
-                                    <input type="datetime-local" id="appointmentDate" name="appointmentDate" required>
-                                </div>
-                            </div>
-                            <div class="form-group full-width">
-                                <label for="appointmentDescription">Descripción del Turno</label>
-                                <textarea id="appointmentDescription" name="appointmentDescription" rows="4" placeholder="Describe los servicios a realizar, observaciones especiales, etc."></textarea>
-                            </div>
-                        </div>
-
-                        <div class="form-actions">
-                            <button type="button" class="btn-secondary">Cancelar</button>
-                            <button type="submit" class="btn-primary">
-                                <i class="fas fa-save"></i> Guardar Cita
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Manage Agenda Table -->
-                <div id="agenda-manage" class="subsection" style="display: block;">
-                    <div class="section-header">
-                        <h2><i class="fas fa-calendar-alt"></i> Administrar Agenda</h2>
-                        <button id="newAppointmentBtn" class="btn-primary">
-                            <i class="fas fa-plus"></i> Nueva Cita
-                        </button>
-                    </div>
-
-                    <div class="table-container">
-                        <table class="data-table">
-                            <thead>
-                            <tr class="search-row">
-                                <td colspan="8">
-                                    <div class="search-container">
-                                        <i class="fas fa-search"></i>
-                                        <input type="text" id="agendaSearch" placeholder="Buscar por mascota, dueño, servicio o estado...">
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="header-row">
-                                <th>Fecha/Hora</th>
-                                <th>Dueño</th>
-                                <th>Teléfono</th>
-                                <th>Mascota</th>
-                                <th>Servicio</th>
-                                <th>Precio</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
-                            </thead>
-                            <tbody id="agendaTableBody">
-                            <tr>
-                                <td>
-                                    <div class="datetime-cell">
-                                        <span class="date">15/01/2024</span>
-                                        <span class="time">09:00</span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="owner-cell">
-                                        <strong>María González</strong>
-                                        <small>DNI: 12345678</small>
-                                    </div>
-                                </td>
-                                <td>+54 11 1234-5678</td>
-                                <td>
-                                    <div class="pet-cell">
-                                        <strong>Max</strong>
-                                        <small>Golden Retriever - Grande</small>
-                                    </div>
-                                </td>
-                                <td>Corte y baño completo</td>
-                                <td class="price-cell">$2,500</td>
-                                <td><span class="status-badge confirmed">Confirmada</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn-icon edit" title="Editar">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn-icon delete" title="Eliminar">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="datetime-cell">
-                                        <span class="date">15/01/2024</span>
-                                        <span class="time">10:30</span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="owner-cell">
-                                        <strong>Carlos Ruiz</strong>
-                                        <small>DNI: 87654321</small>
-                                    </div>
-                                </td>
-                                <td>+54 11 8765-4321</td>
-                                <td>
-                                    <div class="pet-cell">
-                                        <strong>Luna</strong>
-                                        <small>Poodle - Mediano</small>
-                                    </div>
-                                </td>
-                                <td>Baño medicinal y corte de uñas</td>
-                                <td class="price-cell">$1,800</td>
-                                <td><span class="status-badge in-progress">En proceso</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn-icon edit" title="Editar">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn-icon delete" title="Eliminar">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="datetime-cell">
-                                        <span class="date">15/01/2024</span>
-                                        <span class="time">12:00</span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="owner-cell">
-                                        <strong>Ana López</strong>
-                                        <small>DNI: 11223344</small>
-                                    </div>
-                                </td>
-                                <td>+54 11 2233-4455</td>
-                                <td>
-                                    <div class="pet-cell">
-                                        <strong>Rocky</strong>
-                                        <small>Bulldog - Mediano</small>
-                                    </div>
-                                </td>
-                                <td>Corte de uñas y limpieza dental</td>
-                                <td class="price-cell">$1,200</td>
-                                <td><span class="status-badge pending">Pendiente</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn-icon edit" title="Editar">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn-icon delete" title="Eliminar">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="datetime-cell">
-                                        <span class="date">15/01/2024</span>
-                                        <span class="time">14:30</span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="owner-cell">
-                                        <strong>Pedro Martín</strong>
-                                        <small>DNI: 55667788</small>
-                                    </div>
-                                </td>
-                                <td>+54 11 5566-7788</td>
-                                <td>
-                                    <div class="pet-cell">
-                                        <strong>Bella</strong>
-                                        <small>Labrador - Grande</small>
-                                    </div>
-                                </td>
-                                <td>Desparasitación y baño</td>
-                                <td class="price-cell">$2,000</td>
-                                <td><span class="status-badge confirmed">Confirmada</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn-icon edit" title="Editar">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn-icon delete" title="Eliminar">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="datetime-cell">
-                                        <span class="date">15/01/2024</span>
-                                        <span class="time">16:00</span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="owner-cell">
-                                        <strong>Laura Fernández</strong>
-                                        <small>DNI: 99887766</small>
-                                    </div>
-                                </td>
-                                <td>+54 11 9988-7766</td>
-                                <td>
-                                    <div class="pet-cell">
-                                        <strong>Coco</strong>
-                                        <small>Yorkshire - Pequeño</small>
-                                    </div>
-                                </td>
-                                <td>Corte de pelo y pedicura</td>
-                                <td class="price-cell">$1,500</td>
-                                <td><span class="status-badge cancelled">Cancelada</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn-icon edit" title="Editar">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn-icon delete" title="Eliminar">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- PetShop Section -->
-            <section id="petshop-section" class="section">
-                <div class="section-header">
-                    <h2><i class="fas fa-store"></i> PetShop - Inventario</h2>
-                    <button class="btn-primary">Agregar Producto</button>
-                </div>
-
-                <div class="table-container">
-                    <table class="data-table">
-                        <thead>
-                        <tr class="search-row">
-                            <td colspan="5">
-                                <div class="table-header-content">
-                                    <h4>Productos en Stock</h4>
-                                    <div class="search-container">
-                                        <i class="fas fa-search"></i>
-                                        <input type="text" id="petshopSearch" placeholder="Buscar productos...">
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="header-row">
-                            <th class="sortable" data-sort="nombre">
-                                Nombre <i class="fas fa-sort"></i>
-                            </th>
-                            <th class="sortable" data-sort="categoria">
-                                Categoría <i class="fas fa-sort"></i>
-                            </th>
-                            <th class="sortable" data-sort="precio">
-                                Precio <i class="fas fa-sort"></i>
-                            </th>
-                            <th class="sortable" data-sort="stock">
-                                Stock <i class="fas fa-sort"></i>
-                            </th>
-                            <th>Acciones</th>
-                        </tr>
-                        </thead>
-                        <tbody id="petshopTableBody">
-                        <!-- Datos se cargan dinámicamente -->
-                        </tbody>
-                    </table>
-
-                    <div class="pagination">
-                        <div class="pagination-info">
-                            <span id="petshopItemsInfo">Mostrando 1 a 8 de 12 productos</span>
-                        </div>
-                        <div class="pagination-controls">
-                            <button id="petshopPrevBtn" class="pagination-btn">
-                                <i class="fas fa-chevron-left"></i>
-                                Anterior
-                            </button>
-                            <span id="petshopPageInfo" class="page-info">Página 1 de 2</span>
-                            <button id="petshopNextBtn" class="pagination-btn">
-                                Siguiente
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Empleados Section -->
-            <section id="empleados-section" class="section">
-                <div class="section-header">
-                    <h2><i class="fas fa-users"></i> Equipo de Trabajo</h2>
-                    <button class="btn-primary">
-                        <i class="fas fa-plus"></i>
-                        Agregar Empleado
-                    </button>
-                </div>
-
-                <div class="employees-grid">
-                    <div class="employee-card">
-                        <div class="employee-header">
-                            <div class="employee-avatar">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <div class="employee-basic-info">
-                                <h3>Sofia Rodríguez</h3>
-                                <p class="employee-role">Estilista Senior</p>
-                            </div>
-                        </div>
-                        <div class="employee-details">
-                            <div class="employee-contact">
-                                <div class="contact-item">
-                                    <i class="fas fa-envelope"></i>
-                                    <span>sofia@amican.com</span>
-                                </div>
-                                <div class="contact-item">
-                                    <i class="fas fa-phone"></i>
-                                    <span>+1 234-567-8901</span>
-                                </div>
-                                <div class="contact-item">
-                                    <i class="fas fa-star"></i>
-                                    <span>4.9/5.0</span>
-                                </div>
-                            </div>
-                            <div class="employee-specialties">
-                                <p class="specialties-title">Especialidades:</p>
-                                <div class="specialties-tags">
-                                    <span class="specialty-tag">Cortes de raza</span>
-                                    <span class="specialty-tag">Baños medicinales</span>
-                                </div>
-                            </div>
-                            <button class="employee-profile-btn">Ver Perfil</button>
-                        </div>
-                    </div>
-
-                    <div class="employee-card">
-                        <div class="employee-header">
-                            <div class="employee-avatar">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <div class="employee-basic-info">
-                                <h3>Miguel Torres</h3>
-                                <p class="employee-role">Groomer</p>
-                            </div>
-                        </div>
-                        <div class="employee-details">
-                            <div class="employee-contact">
-                                <div class="contact-item">
-                                    <i class="fas fa-envelope"></i>
-                                    <span>miguel@amican.com</span>
-                                </div>
-                                <div class="contact-item">
-                                    <i class="fas fa-phone"></i>
-                                    <span>+1 234-567-8902</span>
-                                </div>
-                                <div class="contact-item">
-                                    <i class="fas fa-star"></i>
-                                    <span>4.7/5.0</span>
-                                </div>
-                            </div>
-                            <div class="employee-specialties">
-                                <p class="specialties-title">Especialidades:</p>
-                                <div class="specialties-tags">
-                                    <span class="specialty-tag">Corte de uñas</span>
-                                    <span class="specialty-tag">Limpieza dental</span>
-                                </div>
-                            </div>
-                            <button class="employee-profile-btn">Ver Perfil</button>
-                        </div>
-                    </div>
-
-                    <div class="employee-card">
-                        <div class="employee-header">
-                            <div class="employee-avatar">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <div class="employee-basic-info">
-                                <h3>Carmen Vega</h3>
-                                <p class="employee-role">Recepcionista</p>
-                            </div>
-                        </div>
-                        <div class="employee-details">
-                            <div class="employee-contact">
-                                <div class="contact-item">
-                                    <i class="fas fa-envelope"></i>
-                                    <span>carmen@amican.com</span>
-                                </div>
-                                <div class="contact-item">
-                                    <i class="fas fa-phone"></i>
-                                    <span>+1 234-567-8903</span>
-                                </div>
-                                <div class="contact-item">
-                                    <i class="fas fa-star"></i>
-                                    <span>4.8/5.0</span>
-                                </div>
-                            </div>
-                            <div class="employee-specialties">
-                                <p class="specialties-title">Especialidades:</p>
-                                <div class="specialties-tags">
-                                    <span class="specialty-tag">Atención al cliente</span>
-                                    <span class="specialty-tag">Gestión de citas</span>
-                                </div>
-                            </div>
-                            <button class="employee-profile-btn">Ver Perfil</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Usuario Section -->
-            <section id="usuario-section" class="section">
-                <div class="section-header">
-                    <h2>Perfil de Usuario</h2>
-                    <p>Gestiona tu información personal</p>
-                    <button id="editProfileBtn" class="btn-secondary">
-                        <i class="fas fa-edit"></i>
-                        Editar
-                    </button>
-                </div>
-
-                <div class="profile-container">
-                    <div class="profile-card personal-info">
-                        <h3><i class="fas fa-user"></i> Información Personal</h3>
-                        <div class="profile-field">
-                            <label>Nombre Completo</label>
-                            <div class="field-content">
-                                <span class="field-value">Administrador Principal</span>
-                                <input type="text" class="field-input" value="Administrador Principal" style="display: none;">
-                            </div>
-                        </div>
-                        <div class="profile-field">
-                            <label>Correo Electrónico</label>
-                            <div class="field-content">
-                                <span class="field-value"><i class="fas fa-envelope"></i> admin@amican.com</span>
-                                <input type="email" class="field-input" value="admin@amican.com" style="display: none;">
-                            </div>
-                        </div>
-                        <div class="profile-field">
-                            <label>Teléfono</label>
-                            <div class="field-content">
-                                <span class="field-value"><i class="fas fa-phone"></i> +1 234 567 8900</span>
-                                <input type="tel" class="field-input" value="+1 234 567 8900" style="display: none;">
-                            </div>
-                        </div>
-                        <div class="profile-field">
-                            <label>Dirección</label>
-                            <div class="field-content">
-                                <span class="field-value"><i class="fas fa-map-marker-alt"></i> 123 Calle Principal, Ciudad</span>
-                                <input type="text" class="field-input" value="123 Calle Principal, Ciudad" style="display: none;">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="profile-card account-info">
-                        <h3><i class="fas fa-calendar"></i> Información de Cuenta</h3>
-                        <div class="profile-field">
-                            <label>Fecha de Registro</label>
-                            <span class="field-value">15 de Enero, 2024</span>
-                        </div>
-                        <div class="profile-field">
-                            <label>Tipo de Usuario</label>
-                            <span class="field-value">Administrador</span>
-                        </div>
-                        <div class="profile-field">
-                            <label>Estado</label>
-                            <span class="field-value">
-                                    <span class="status-indicator active"></span>
-                                    Activo
-                                </span>
-                        </div>
-                        <div class="profile-field">
-                            <label>Último Acceso</label>
-                            <span class="field-value">Hoy, 10:30 AM</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="profileActions" class="profile-actions" style="display: none;">
-                    <button id="cancelEditBtn" class="btn-secondary">
-                        <i class="fas fa-times"></i>
-                        Cancelar
-                    </button>
-                    <button id="saveProfileBtn" class="btn-primary">
-                        <i class="fas fa-save"></i>
-                        Guardar Cambios
-                    </button>
-                </div>
+                <!-- Aquí va el resto del contenido del dashboard -->
             </section>
         </main>
     </div>
 </div>
 
-<script th:src="@{/js/script.js}"></script>
-<!-- Updated sidebar functionality to work consistently across devices -->
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const toggleSidebar = document.getElementById('toggleSidebar');
-        const sidebar = document.getElementById('sidebar');
-        const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+    document.addEventListener('DOMContentLoaded', function () {
+      const sidebar = document.getElementById('sidebar');
+      const toggleSidebar = document.getElementById('toggleSidebar');
+      const mobileToggle = document.getElementById('mobileToggle');
+      const overlay = document.getElementById('overlay');
+      const userMenuBtn = document.getElementById('userMenuBtn');
+      const userDropdown = document.getElementById('userDropdown');
 
-        // Sidebar toggle functionality (same for all devices)
-        if (toggleSidebar) {
-            toggleSidebar.addEventListener('click', function() {
-                sidebar.classList.toggle('collapsed');
-            });
-        }
+      // Detectar si estamos en móvil
+      function isMobile() {
+        return window.innerWidth <= 768;
+      }
 
-        // Dropdown functionality
-        dropdownToggles.forEach(toggle => {
-            toggle.addEventListener('click', function(e) {
-                e.preventDefault();
-                const dropdown = this.nextElementSibling;
-                const arrow = this.querySelector('.dropdown-arrow');
+      // 1. Toggle en desktop: colapsar sidebar
+      if (toggleSidebar) {
+        toggleSidebar.addEventListener('click', function () {
+          if (!isMobile()) {
+            sidebar.classList.toggle('collapsed');
+          }
+        });
+      }
 
-                // Close other dropdowns
-                dropdownToggles.forEach(otherToggle => {
-                    if (otherToggle !== this) {
-                        const otherDropdown = otherToggle.nextElementSibling;
-                        const otherArrow = otherToggle.querySelector('.dropdown-arrow');
-                        otherDropdown.classList.remove('show');
-                        otherArrow.classList.remove('rotated');
-                    }
-                });
-
-                // Toggle current dropdown
-                dropdown.classList.toggle('show');
-                arrow.classList.toggle('rotated');
-            });
+      // 2. Toggle en móvil: mostrar/ocultar sidebar con overlay
+      if (mobileToggle && overlay) {
+        mobileToggle.addEventListener('click', function () {
+          sidebar.classList.add('show');
+          overlay.classList.add('active');
         });
 
-        // Close dropdowns when sidebar is collapsed
-        if (sidebar) {
-            const observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                        if (sidebar.classList.contains('collapsed')) {
-                            document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
-                                dropdown.classList.remove('show');
-                            });
-                            document.querySelectorAll('.dropdown-arrow').forEach(arrow => {
-                                arrow.classList.remove('rotated');
-                            });
-                        }
-                    }
-                });
-            });
-            observer.observe(sidebar, { attributes: true });
+        overlay.addEventListener('click', function () {
+          sidebar.classList.remove('show');
+          overlay.classList.remove('active');
+        });
+      }
+
+      // ⚠️ NO CERRAR EL SIDEBAR AL HACER CLIC EN UN ENLACE
+      // Comentamos o eliminamos esta parte
+      /*
+      const navLinks = document.querySelectorAll('.nav-subitem, .nav-item');
+      navLinks.forEach(link => {
+        link.addEventListener('click', function () {
+          if (isMobile()) {
+            setTimeout(() => {
+              sidebar.classList.remove('show');
+              overlay.classList.remove('active');
+            }, 300);
+          }
+        });
+      });
+      */
+
+      // 3. Dropdowns del sidebar
+      const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+      dropdownToggles.forEach(toggle => {
+        toggle.addEventListener('click', function (e) {
+          e.preventDefault();
+          const dropdown = this.nextElementSibling;
+          const arrow = this.querySelector('.dropdown-arrow');
+
+          // Cerrar otros
+          dropdownToggles.forEach(other => {
+            if (other !== toggle) {
+              other.nextElementSibling.classList.remove('show');
+              other.querySelector('.dropdown-arrow').classList.remove('rotated');
+            }
+          });
+
+          // Toggle actual
+          dropdown.classList.toggle('show');
+          arrow.classList.toggle('rotated');
+        });
+      });
+
+      // 4. Dropdown de usuario
+      if (userMenuBtn && userDropdown) {
+        userMenuBtn.addEventListener('click', function () {
+          userDropdown.classList.toggle('show');
+        });
+
+        document.addEventListener('click', function (e) {
+          if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+            userDropdown.classList.remove('show');
+          }
+        });
+      }
+
+      // 5. Manejo de redimensionado
+      function handleResize() {
+        if (!isMobile()) {
+          sidebar.classList.remove('show');
+          overlay?.classList.remove('active');
+        } else {
+          sidebar.classList.remove('collapsed'); // En móvil, no colapsar visualmente
         }
+      }
+
+      window.addEventListener('resize', handleResize);
+      handleResize();
     });
 </script>
 </body>

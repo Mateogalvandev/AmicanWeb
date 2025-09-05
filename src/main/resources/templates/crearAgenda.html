@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Agenda - Amican</title>
+    <link rel="stylesheet" th:href="@{/css/crearAgenda.css}"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="app-container">
+    Sidebar
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <button id="toggleSidebar" class="toggle-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-group">
+                <button class="nav-item dropdown-toggle" data-section="agenda">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span class="nav-text">Agenda</span>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                </button>
+                <div class="nav-dropdown">
+                    <button class="nav-subitem" data-section="agenda-manage">
+                        <i class="fas fa-list"></i>
+                        <span class="nav-text">Ver Agenda</span>
+                    </button>
+                    <button class="nav-subitem active" data-section="agenda-create">
+                        <i class="fas fa-plus"></i>
+                        <span class="nav-text">Nueva Cita</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="nav-group">
+                <button class="nav-item dropdown-toggle" data-section="clientes">
+                    <i class="fas fa-users"></i>
+                    <span class="nav-text">Clientes</span>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                </button>
+                <div class="nav-dropdown">
+                    <button class="nav-subitem" data-section="clientes-list">
+                        <i class="fas fa-list"></i>
+                        <span class="nav-text">Ver Clientes</span>
+                    </button>
+                    <button class="nav-subitem" data-section="clientes-create">
+                        <i class="fas fa-user-plus"></i>
+                        <span class="nav-text">Crear Cliente</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="system-info">
+                <p class="system-title">Sistema Amican</p>
+                <p class="system-version">Versión 1.0</p>
+            </div>
+        </div>
+    </aside>
+
+    Main Content
+    <div class="main-content">
+        Header
+        <header class="header">
+            <div class="header-left">
+                <button id="logoBtn" class="logo-container">
+                    <div class="logo-wrapper">
+                        <img th:src="@{/images/logo.png}"
+                             alt="Amican Logo"
+                             style="width: 40px; height: 40px; object-fit: contain;" />
+                    </div>
+                    <div class="logo-info">
+                        <h1 class="logo-text">Amican</h1>
+                        <p class="logo-subtitle">Panel de administración</p>
+                    </div>
+                </button>
+            </div>
+
+            <div class="header-right">
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                </button>
+
+                <div class="user-menu">
+                    <button class="user-menu-btn" id="userMenuBtn">
+                        <div class="user-avatar">AD</div>
+                        <div class="user-info">
+                            <p class="user-name">Administrador</p>
+                            <p class="user-email">admin@amican.com</p>
+                        </div>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        Content
+        <div class="content">
+            <div class="section-header">
+                <h2><i class="fas fa-calendar-plus"></i> Crear Nueva Cita</h2>
+                <button id="backToAgendaBtn" class="btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver a Agenda
+                </button>
+            </div>
+
+            <form id="crearAgendaForm" class="appointment-form">
+                Dueños Section
+                <div class="form-section">
+                    <div class="section-title">
+                        <h3><i class="fas fa-users"></i> Información de los Dueños</h3>
+                        <p class="section-subtitle">Agregue uno o más dueños responsables de las mascotas</p>
+                    </div>
+
+                    <div id="dueniosContainer">
+                        <div class="owner-group" data-owner="1">
+                            <div class="owner-header">
+                                <h4><i class="fas fa-user"></i> Dueño #1</h4>
+                                <button type="button" class="btn-remove-owner" style="display: none;">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="duenio1_nombre">Nombre *</label>
+                                    <input type="text" id="duenio1_nombre" name="dueniosList[0].nombre" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="duenio1_apellido">Apellido *</label>
+                                    <input type="text" id="duenio1_apellido" name="dueniosList[0].apellido" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="duenio1_dni">DNI *</label>
+                                    <input type="text" id="duenio1_dni" name="dueniosList[0].dni" required pattern="[0-9]{7,8}" title="Ingrese un DNI válido">
+                                </div>
+                                <div class="form-group">
+                                    <label for="duenio1_telefono">Teléfono *</label>
+                                    <input type="tel" id="duenio1_telefono" name="dueniosList[0].telefono" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="duenio1_email">Email</label>
+                                    <input type="email" id="duenio1_email" name="dueniosList[0].email">
+                                </div>
+                                <div class="form-group">
+                                    <label for="duenio1_direccion">Dirección</label>
+                                    <input type="text" id="duenio1_direccion" name="dueniosList[0].direccion">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" id="addDuenioBtn" class="btn-add">
+                        <i class="fas fa-plus"></i> Agregar otro dueño
+                    </button>
+                </div>
+
+                Mascotas Section
+                <div class="form-section">
+                    <div class="section-title">
+                        <h3><i class="fas fa-dog"></i> Información de las Mascotas</h3>
+                        <p class="section-subtitle">Agregue una o más mascotas para la cita</p>
+                    </div>
+
+                    <div id="mascotasContainer">
+                        <div class="pet-group" data-pet="1">
+                            <div class="pet-header">
+                                <h4><i class="fas fa-dog"></i> Mascota #1</h4>
+                                <button type="button" class="btn-remove-pet" style="display: none;">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="mascota1_nombre">Nombre de la Mascota *</label>
+                                    <input type="text" id="mascota1_nombre" name="mascotasList[0].nombre" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="mascota1_raza">Raza *</label>
+                                    <input type="text" id="mascota1_raza" name="mascotasList[0].raza" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="mascota1_tamaño">Tamaño *</label>
+                                    <select id="mascota1_tamaño" name="mascotasList[0].tamaño" required>
+                                        <option value="">Seleccionar tamaño</option>
+                                        <option value="Muy Pequeño">Muy Pequeño (hasta 5kg)</option>
+                                        <option value="Pequeño">Pequeño (5-15kg)</option>
+                                        <option value="Mediano">Mediano (15-25kg)</option>
+                                        <option value="Grande">Grande (25-40kg)</option>
+                                        <option value="Muy Grande">Muy Grande (más de 40kg)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="mascota1_edad">Edad</label>
+                                    <input type="text" id="mascota1_edad" name="mascotasList[0].edad" placeholder="Ej: 2 años, 6 meses">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="mascota1_sexo">Sexo</label>
+                                    <select id="mascota1_sexo" name="mascotasList[0].sexo">
+                                        <option value="">Seleccionar</option>
+                                        <option value="Macho">Macho</option>
+                                        <option value="Hembra">Hembra</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="mascota1_peso">Peso (kg)</label>
+                                    <input type="number" id="mascota1_peso" name="mascotasList[0].peso" min="0" step="0.1">
+                                </div>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="mascota1_observaciones">Observaciones Médicas</label>
+                                <textarea id="mascota1_observaciones" name="mascotasList[0].observaciones" rows="2" placeholder="Alergias, medicamentos, condiciones especiales, etc."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" id="addMascotaBtn" class="btn-add">
+                        <i class="fas fa-plus"></i> Agregar otra mascota
+                    </button>
+                </div>
+
+                Fecha y Estado Section
+                <div class="form-section">
+                    <div class="section-title">
+                        <h3><i class="fas fa-calendar-clock"></i> Fecha, Hora y Estado</h3>
+                        <p class="section-subtitle">Configure la fecha, hora y estado inicial de la cita</p>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fecha">Fecha y Hora de la Cita *</label>
+                            <input type="datetime-local" id="fecha" name="fecha" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="estados">Estado de la Cita *</label>
+                            <select id="estados" name="estados" required>
+                                <option value="">Seleccionar estado</option>
+                                <option value="PENDIENTE">Pendiente</option>
+                                <option value="CONFIRMADA">Confirmada</option>
+                                <option value="EN_PROGRESO">En Progreso</option>
+                                <option value="COMPLETADA">Completada</option>
+                                <option value="CANCELADA">Cancelada</option>
+                                <option value="NO_ASISTIO">No Asistió</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                Detalles del Servicio Section
+                <div class="form-section">
+                    <div class="section-title">
+                        <h3><i class="fas fa-clipboard-list"></i> Detalles del Servicio</h3>
+                        <p class="section-subtitle">Información adicional sobre los servicios a realizar</p>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="tipoServicio">Tipo de Servicio *</label>
+                            <select id="tipoServicio" name="tipoServicio" required>
+                                <option value="">Seleccionar servicio</option>
+                                <option value="Baño y Corte">Baño y Corte</option>
+                                <option value="Solo Baño">Solo Baño</option>
+                                <option value="Solo Corte">Solo Corte</option>
+                                <option value="Desparasitación">Desparasitación</option>
+                                <option value="Vacunación">Vacunación</option>
+                                <option value="Consulta Veterinaria">Consulta Veterinaria</option>
+                                <option value="Limpieza Dental">Limpieza Dental</option>
+                                <option value="Corte de Uñas">Corte de Uñas</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="precio">Precio del Servicio ($) *</label>
+                            <div class="price-input">
+                                <span class="currency">$</span>
+                                <input type="number" id="precio" name="precio" min="0" step="0.01" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="descripcionServicio">Descripción del Servicio</label>
+                        <textarea id="descripcionServicio" name="descripcionServicio" rows="4" placeholder="Describe los servicios específicos a realizar, observaciones especiales, productos a utilizar, etc."></textarea>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="notasInternas">Notas Internas</label>
+                        <textarea id="notasInternas" name="notasInternas" rows="3" placeholder="Notas privadas para el personal (no visibles para el cliente)"></textarea>
+                    </div>
+                </div>
+
+                Form Actions
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancelarBtn">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button type="button" class="btn-secondary" id="guardarBorradorBtn">
+                        <i class="fas fa-save"></i> Guardar como Borrador
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-calendar-check"></i> Crear Cita
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="js/crear-agenda.js"></script>
+</body>
+</html>
