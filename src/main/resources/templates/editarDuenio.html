@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Dueño - Amican</title>
+    <link rel="stylesheet" th:href="@{/css/crearDuenio.css}"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="app-container">
+    <!-- Overlay para móviles -->
+    <div id="overlay" class="overlay"></div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <button id="toggleSidebar" class="toggle-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <!-- Simplified navigation without horizontal dropdown -->
+            <div class="nav-group">
+                <button class="nav-item dropdown-toggle" data-section="agenda">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span class="nav-text">Agenda</span>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                </button>
+                <div class="nav-dropdown">
+                    <a th:href="@{/turnos/ver}" class="nav-subitem" data-section="agenda-manage">
+                        <i class="fas fa-list"></i>
+                        <span class="nav-text">Ver Agenda</span>
+                    </a>
+                    <a th:href="@{/turnos/crear}" class="nav-subitem" data-section="agenda-create">
+                        <i class="fas fa-plus"></i>
+                        <span class="nav-text">Nueva Cita</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Replaced Empleados with Clientes section -->
+            <div class="nav-group">
+                <button class="nav-item dropdown-toggle" data-section="clientes">
+                    <i class="fas fa-users"></i>
+                    <span class="nav-text">Clientes</span>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                </button>
+                <div class="nav-dropdown">
+                    <a th:href="@{/duenios/ver}" class="nav-subitem" data-section="clientes-list">
+                        <i class="fas fa-list"></i>
+                        <span class="nav-text">Ver Clientes</span>
+                    </a>
+                    <a th:href="@{/duenios/crear}" class="nav-subitem active" data-section="clientes-create">
+                        <i class="fas fa-user-plus"></i>
+                        <span class="nav-text">Crear Cliente</span>
+                    </a>
+                    <a th:href="@{/mascotas/ver}" class="nav-subitem" data-section="mascotas-list">
+                        <i class="fas fa-dog"></i>
+                        <span class="nav-text">Ver Mascotas</span>
+                    </a>
+                    <a th:href="@{/mascotas/crear}" class="nav-subitem" data-section="mascotas-create">
+                        <i class="fas fa-plus"></i>
+                        <span class="nav-text">Crear Mascota</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="system-info">
+                <p class="system-title">Sistema Amican</p>
+                <p class="system-version">Versión 1.0</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <!-- Botón de toggle para móviles -->
+                <button id="mobileToggle" class="mobile-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <a th:href="@{/}" class="logo-container" style="text-decoration: none; color: inherit;">
+                    <div class="logo-wrapper">
+                        <img th:src="@{/images/logo.png}" alt="Amican Logo" class="logo">
+                    </div>
+                    <div class="logo-info">
+                        <h1 class="logo-text">Amican</h1>
+                        <p class="logo-subtitle">Panel de administración</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="header-right">
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                </button>
+
+                <div class="user-menu">
+                    <button id="userMenuBtn" class="user-menu-btn">
+                        <div class="user-avatar">
+                            <span>AD</span>
+                        </div>
+                        <div class="user-info">
+                            <p class="user-name">Administrador</p>
+                            <p class="user-email">admin@amican.com</p>
+                        </div>
+                    </button>
+                    <div id="userDropdown" class="user-dropdown">
+                        <button class="dropdown-item" data-section="usuario">
+                            <i class="fas fa-user"></i>
+                            Mi Perfil
+                        </button>
+                        <button class="dropdown-item">
+                            <i class="fas fa-cog"></i>
+                            Configuración
+                        </button>
+                        <div class="dropdown-separator"></div>
+                        <button class="dropdown-item logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Cerrar sesión
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <main class="content">
+            <!-- Replaced dashboard content with owner edit form -->
+            <section id="editar-dueno-section" class="section active">
+                <div class="section-header">
+                    <div class="section-title">
+                        <h2>Editar Dueño</h2>
+                        <p class="section-subtitle">Actualiza la información del propietario de la mascota</p>
+                    </div>
+                </div>
+
+                <div class="form-container">
+                    <div class="form-card">
+                        <div class="form-header">
+                            <div class="form-icon">
+                                <i class="fas fa-user-edit"></i>
+                            </div>
+                            <div class="form-title">
+                                <h3>Información del Dueño</h3>
+                                <p>Actualiza los campos que necesites modificar</p>
+                            </div>
+                        </div>
+
+                        <form id="editarDuenioForm"
+                              th:action="@{/duenios/editar/{id}(id=${duenioDto.idDuenio})}"
+                              method="POST"
+                              th:object="${duenioDto}"
+                              class="owner-form">
+
+                            <input type="hidden" th:field="*{idDuenio}" />
+
+
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="nombre" class="form-label">
+                                        <i class="fas fa-user"></i>
+                                        Nombre *
+                                    </label>
+                                    <input
+                                            type="text"
+                                            id="nombre"
+                                            name="nombre"
+                                            th:field="*{nombreDuenio}"
+                                            class="form-input"
+                                                placeholder="Ingrese el nombre"
+                                                required
+                                            maxlength="50"
+                                    >
+                                    <div class="form-error" id="nombre-error"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="apellido" class="form-label">
+                                        <i class="fas fa-user"></i>
+                                        Apellido *
+                                    </label>
+                                    <input
+                                            type="text"
+                                            id="apellido"
+                                            name="apellido"
+                                            th:field="*{apellido}"
+                                            class="form-input"
+                                            placeholder="Ingrese el apellido"
+                                            required
+                                            maxlength="50"
+                                    >
+                                    <div class="form-error" id="apellido-error"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="celular" class="form-label">
+                                        <i class="fas fa-phone"></i>
+                                        Celular *
+                                    </label>
+                                    <input
+                                            type="tel"
+                                            id="celular"
+                                            name="celular"
+                                            th:field="*{celular}"
+                                            class="form-input"
+                                            placeholder="Ej: +54 9 11 1234-5678"
+                                            required
+                                            pattern="[+]?[0-9\s\-()]+"
+                                            maxlength="20"
+                                    >
+                                    <div class="form-error" id="celular-error"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="dni" class="form-label">
+                                        <i class="fas fa-id-card"></i>
+                                        DNI *
+                                    </label>
+                                    <input
+                                            type="text"
+                                            id="dni"
+                                            name="dni"
+                                            th:field="*{dni}"
+                                            class="form-input"
+                                            placeholder="Ej: 12345678"
+                                            required
+                                            pattern="[0-9]{7,8}"
+                                            maxlength="8"
+                                    >
+                                    <div class="form-error" id="dni-error"></div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" onclick="window.history.back()">
+                                    <i class="fas fa-arrow-left"></i>
+                                    Cancelar
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i>
+                                    Actualizar Dueño
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Elementos del DOM para el toggle responsive
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('toggleSidebar');
+        const mobileToggle = document.getElementById('mobileToggle');
+        const overlay = document.getElementById('overlay');
+        const mainContent = document.querySelector('.main-content');
+
+        // Toggle sidebar en desktop (solo funciona en pantallas grandes)
+        if (toggleBtn && sidebar) {
+            toggleBtn.addEventListener('click', function() {
+                // Solo funciona en desktop (ancho mayor a 768px)
+                if (window.innerWidth > 768) {
+                    sidebar.classList.toggle('collapsed');
+                }
+            });
+        }
+
+        // Toggle sidebar en móviles
+        if (mobileToggle) {
+            mobileToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('show');
+                overlay.classList.toggle('active');
+            });
+        }
+
+        // Cerrar sidebar al hacer clic en el overlay
+        if (overlay) {
+            overlay.addEventListener('click', function() {
+                sidebar.classList.remove('show');
+                overlay.classList.remove('active');
+            });
+        }
+
+        // Dropdown functionality
+        const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+        dropdownToggles.forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                const dropdown = this.nextElementSibling;
+                const arrow = this.querySelector('.dropdown-arrow');
+
+                if (dropdown && dropdown.classList.contains('nav-dropdown')) {
+                    dropdown.classList.toggle('show');
+                    arrow.classList.toggle('rotated');
+                }
+            });
+        });
+
+        // User menu dropdown
+        const userMenuBtn = document.getElementById('userMenuBtn');
+        const userDropdown = document.getElementById('userDropdown');
+
+        if (userMenuBtn && userDropdown) {
+            userMenuBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                userDropdown.classList.toggle('show');
+            });
+
+            document.addEventListener('click', function() {
+                userDropdown.classList.remove('show');
+            });
+        }
+
+        // Form validation
+        const form = document.getElementById('editarDuenioForm');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // Clear previous errors
+                document.querySelectorAll('.form-error').forEach(error => {
+                    error.textContent = '';
+                });
+                document.querySelectorAll('.form-input').forEach(input => {
+                    input.classList.remove('error');
+                });
+
+                let isValid = true;
+
+                // Validate nombre
+                const nombre = document.getElementById('nombre');
+                if (!nombre.value.trim()) {
+                    showError('nombre', 'El nombre es requerido');
+                    isValid = false;
+                } else if (nombre.value.trim().length < 2) {
+                    showError('nombre', 'El nombre debe tener al menos 2 caracteres');
+                    isValid = false;
+                }
+
+                // Validate apellido
+                const apellido = document.getElementById('apellido');
+                if (!apellido.value.trim()) {
+                    showError('apellido', 'El apellido es requerido');
+                    isValid = false;
+                } else if (apellido.value.trim().length < 2) {
+                    showError('apellido', 'El apellido debe tener al menos 2 caracteres');
+                    isValid = false;
+                }
+
+                // Validate celular
+                const celular = document.getElementById('celular');
+                const phoneRegex = /^[+]?[0-9\s\-()]{8,20}$/;
+                if (!celular.value.trim()) {
+                    showError('celular', 'El celular es requerido');
+                    isValid = false;
+                } else if (!phoneRegex.test(celular.value.trim())) {
+                    showError('celular', 'Formato de celular inválido');
+                    isValid = false;
+                }
+
+                // Validate DNI
+                const dni = document.getElementById('dni');
+                const dniRegex = /^[0-9]{7,8}$/;
+                if (!dni.value.trim()) {
+                    showError('dni', 'El DNI es requerido');
+                    isValid = false;
+                } else if (!dniRegex.test(dni.value.trim())) {
+                    showError('dni', 'El DNI debe tener 7 u 8 dígitos');
+                    isValid = false;
+                }
+
+                if (isValid) {
+                    // If validation passes, submit the form
+                    this.submit();
+                }
+            });
+        }
+
+        function showError(fieldId, message) {
+            const errorElement = document.getElementById(fieldId + '-error');
+            const inputElement = document.getElementById(fieldId);
+
+            if (errorElement) {
+                errorElement.textContent = message;
+            }
+            if (inputElement) {
+                inputElement.classList.add('error');
+            }
+        }
+
+        // Real-time validation
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('blur', function() {
+                const errorElement = document.getElementById(this.id + '-error');
+                if (errorElement && errorElement.textContent) {
+                    // Re-validate on blur if there was an error
+                    form.dispatchEvent(new Event('submit'));
+                }
+            });
+
+            input.addEventListener('input', function() {
+                // Clear error styling on input
+                this.classList.remove('error');
+                const errorElement = document.getElementById(this.id + '-error');
+                if (errorElement) {
+                    errorElement.textContent = '';
+                }
+            });
+        });
+
+        // Manejo responsive al redimensionar
+        function handleResize() {
+            if (window.innerWidth > 768) {
+                // En desktop, asegurarse que el sidebar esté visible y sin overlay
+                sidebar.classList.remove('show');
+                overlay.classList.remove('active');
+            }
+        }
+
+        window.addEventListener('resize', handleResize);
+        handleResize(); // Ejecutar al cargar
+    });
+</script>
+</body>
+</html>

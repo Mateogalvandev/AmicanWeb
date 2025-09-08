@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Amican</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/register.css}">
+    <style>
+        /* Added styles for password visibility toggle */
+        .password-field {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #666;
+            font-size: 16px;
+            z-index: 10;
+        }
+
+        .password-toggle:hover {
+            color: #333;
+        }
+
+        .password-field input {
+            padding-right: 45px;
+        }
+
+        .password-match-error {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+            font-weight: bold;
+        }
+
+        .password-match-success {
+            color: #28a745;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* Added styles for field error messages to be bold and red */
+        .field-error {
+            color: #dc2626;
+            font-weight: bold;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .alert.alert-danger {
+            color: #dc2626;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="registro-container">
+    <div class="registro-header">
+        <div class="logo-container">
+            <div class="logo-wrapper">
+                <img th:src="@{/images/logo.png}"
+                     alt="Amican Logo"
+                     style="width: 40px; height: 40px; object-fit: contain;" />
+            </div>
+            <h1 class="logo-text">Amican</h1>
+        </div>
+        <h2 class="registro-title">Crear Cuenta</h2>
+        <p class="registro-subtitle">Únete a nuestro equipo de estética canina</p>
+    </div>
+
+    <!-- Mensajes de éxito/error -->
+    <div th:if="${successMessage}" class="alert alert-success" role="alert">
+        <i class="fas fa-check-circle"></i>
+        <span th:text="${successMessage}"></span>
+    </div>
+
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+        <i class="fas fa-exclamation-circle"></i>
+        <span th:text="${errorMessage}"></span>
+    </div>
+
+    <!-- Formulario adaptado al DTO -->
+    <form id="registrationForm" th:action="@{/register}" th:object="${userDto}" method="post">
+        <div class="form-section">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" id="nombre" th:field="*{nombre}" name="nombre"
+                           placeholder="Ingresa tu nombre" required>
+                    <div class="field-error" th:if="${#fields.hasErrors('nombre')}"
+                         th:errors="*{nombre}"></div>
+                </div>
+                <div class="form-group">
+                    <label for="apellido">Apellido</label>
+                    <input type="text" id="apellido" th:field="*{apellido}" name="apellido"
+                           placeholder="Ingresa tu apellido" required>
+                    <div class="field-error" th:if="${#fields.hasErrors('apellido')}"
+                         th:errors="*{apellido}"></div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group full-width">
+                    <label for="username">Nombre de Usuario</label>
+                    <input type="text" id="username" th:field="*{username}" name="username"
+                           placeholder="Elige un nombre de usuario" required>
+                    <div class="field-error" th:if="${#fields.hasErrors('username')}"
+                         th:errors="*{username}"></div>
+                </div>
+            </div>
+
+            <!-- Modified password field to include eye icon -->
+            <div class="form-row">
+                <div class="form-group full-width">
+                    <label for="password">Contraseña</label>
+                    <div class="password-field">
+                        <input type="password" id="password" th:field="*{password}" name="password"
+                               placeholder="Mínimo 8 caracteres" required>
+                        <i class="fas fa-eye password-toggle" id="togglePassword" onclick="togglePasswordVisibility('password', 'togglePassword')"></i>
+                    </div>
+                    <div class="field-error" th:if="${#fields.hasErrors('password')}"
+                         th:errors="*{password}"></div>
+                </div>
+            </div>
+
+            <!-- Added password confirmation field -->
+            <div class="form-row">
+                <div class="form-group full-width">
+                    <label for="confirmPassword">Confirmar Contraseña</label>
+                    <div class="password-field">
+                        <input type="password" id="confirmPassword" name="confirmPassword"
+                               placeholder="Confirma tu contraseña" required>
+                        <i class="fas fa-eye password-toggle" id="toggleConfirmPassword" onclick="togglePasswordVisibility('confirmPassword', 'toggleConfirmPassword')"></i>
+                    </div>
+                    <div class="password-match-error" id="passwordMatchError">
+                        <i class="fas fa-exclamation-circle"></i>
+                        Las contraseñas no coinciden
+                    </div>
+                    <div class="password-match-success" id="passwordMatchSuccess">
+                        <i class="fas fa-check-circle"></i>
+                        Las contraseñas coinciden
+                    </div>
+                </div>
+            </div>
+
+            <!-- Campo de fecha oculto (se establece automáticamente en el controller) -->
+            <input type="hidden" th:field="*{fecha}" />
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">
+                <i class="fas fa-user-plus"></i>
+                Crear Cuenta
+            </button>
+        </div>
+    </form>
+
+    <div class="login-link">
+        <p>¿Ya tienes una cuenta? <a th:href="@{/login}" href="/login">Iniciar Sesión</a></p>
+    </div>
+</div>
+
+<script>
+    function togglePasswordVisibility(inputId, iconId) {
+        const passwordInput = document.getElementById(inputId);
+        const toggleIcon = document.getElementById(iconId);
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.classList.remove('fa-eye');
+            toggleIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.classList.remove('fa-eye-slash');
+            toggleIcon.classList.add('fa-eye');
+        }
+    }
+
+    function validatePasswordMatch() {
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const errorDiv = document.getElementById('passwordMatchError');
+        const successDiv = document.getElementById('passwordMatchSuccess');
+
+        if (confirmPassword === '') {
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+            return true;
+        }
+
+        if (password === confirmPassword) {
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'block';
+            return true;
+        } else {
+            errorDiv.style.display = 'block';
+            successDiv.style.display = 'none';
+            return false;
+        }
+    }
+
+    document.getElementById('password').addEventListener('input', validatePasswordMatch);
+    document.getElementById('confirmPassword').addEventListener('input', validatePasswordMatch);
+
+    document.getElementById('registrationForm').addEventListener('submit', function(e) {
+        const nombre = document.getElementById('nombre').value;
+        const apellido = document.getElementById('apellido').value;
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        if (!nombre || !apellido || !username || !password || !confirmPassword) {
+            e.preventDefault();
+            alert('Por favor, completa todos los campos requeridos.');
+            return;
+        }
+
+        if (password.length < 8) {
+            e.preventDefault();
+            alert('La contraseña debe tener al menos 8 caracteres.');
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            e.preventDefault();
+            alert('Las contraseñas no coinciden. Por favor, verifica que ambas contraseñas sean iguales.');
+            return;
+        }
+
+        // Validación adicional del username (solo letras, números y guiones)
+        const usernameRegex = /^[a-zA-Z0-9_-]+$/;
+        if (!usernameRegex.test(username)) {
+            e.preventDefault();
+            alert('El nombre de usuario solo puede contener letras, números, guiones y guiones bajos.');
+            return;
+        }
+    });
+
+    // Validación en tiempo real
+    document.getElementById('username').addEventListener('input', function(e) {
+        const username = e.target.value;
+        const usernameRegex = /^[a-zA-Z0-9_-]*$/;
+
+        if (!usernameRegex.test(username)) {
+            e.target.setCustomValidity('Solo letras, números, guiones y guiones bajos permitidos');
+        } else {
+            e.target.setCustomValidity('');
+        }
+    });
+
+    document.getElementById('password').addEventListener('input', function(e) {
+        const password = e.target.value;
+
+        if (password.length > 0 && password.length < 8) {
+            e.target.setCustomValidity('La contraseña debe tener al menos 8 caracteres');
+        } else {
+            e.target.setCustomValidity('');
+        }
+    });
+</script>
+</body>
+</html>

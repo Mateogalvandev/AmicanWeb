@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleccionar Dueño - Amican</title>
+    <link rel="stylesheet" th:href="@{/css/crearAgenda.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <button id="toggleSidebar" class="toggle-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <!-- Simplified navigation without horizontal dropdown -->
+            <div class="nav-group">
+                <button class="nav-item dropdown-toggle" data-section="agenda">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span class="nav-text">Agenda</span>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                </button>
+                <div class="nav-dropdown">
+                    <a th:href="@{/turnos/ver}" class="nav-subitem" data-section="agenda-manage">
+                        <i class="fas fa-list"></i>
+                        <span class="nav-text">Ver Agenda</span>
+                    </a>
+                    <a th:href="@{/turnos/crear}" class="nav-subitem" data-section="agenda-create">
+                        <i class="fas fa-plus"></i>
+                        <span class="nav-text">Nueva Cita</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Replaced Empleados with Clientes section -->
+            <div class="nav-group">
+                <button class="nav-item dropdown-toggle" data-section="clientes">
+                    <i class="fas fa-users"></i>
+                    <span class="nav-text">Clientes</span>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                </button>
+                <div class="nav-dropdown">
+                    <a th:href="@{/duenios/ver}" class="nav-subitem" data-section="clientes-list">
+                        <i class="fas fa-list"></i>
+                        <span class="nav-text">Ver Clientes</span>
+                    </a>
+                    <a th:href="@{/duenios/crear}" class="nav-subitem active" data-section="clientes-create">
+                        <i class="fas fa-user-plus"></i>
+                        <span class="nav-text">Crear Cliente</span>
+                    </a>
+                    <a th:href="@{/mascotas/ver}" class="nav-subitem" data-section="mascotas-list">
+                        <i class="fas fa-dog"></i>
+                        <span class="nav-text">Ver Mascotas</span>
+                    </a>
+                    <a th:href="@{/mascotas/crear}" class="nav-subitem" data-section="mascotas-create">
+                        <i class="fas fa-plus"></i>
+                        <span class="nav-text">Crear Mascota</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="system-info">
+                <p class="system-title">Sistema Amican</p>
+                <p class="system-version">Versión 1.0</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Overlay para móviles -->
+    <div id="overlay" class="overlay"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <button id="mobileToggle" class="mobile-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <button id="logoBtn" class="logo-container">
+                    <div class="logo-wrapper">
+                        <img th:src="@{/images/logo.png}" alt="Amican Logo" class="logo">
+                    </div>
+                    <div class="logo-info">
+                        <h1 class="logo-text">Amican</h1>
+                        <p class="logo-subtitle">Panel de administración</p>
+                    </div>
+                </button>
+            </div>
+            <div class="header-right">
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                </button>
+                <div class="user-menu">
+                    <button id="userMenuBtn" class="user-menu-btn">
+                        <div class="user-avatar">
+                            <span>AD</span>
+                        </div>
+                        <div class="user-info">
+                            <p class="user-name">Administrador</p>
+                            <p class="user-email">admin@amican.com</p>
+                        </div>
+                    </button>
+                    <div id="userDropdown" class="user-dropdown">
+                        <button class="dropdown-item" data-section="usuario">
+                            <i class="fas fa-user"></i> Mi Perfil
+                        </button>
+                        <button class="dropdown-item">
+                            <i class="fas fa-cog"></i> Configuración
+                        </button>
+                        <div class="dropdown-separator"></div>
+                        <button class="dropdown-item logout">
+                            <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- Content -->
+        <main class="content">
+            <div class="section-header">
+                <h2><i class="fas fa-calendar-plus"></i> Crear Nuevo Turno</h2>
+                <a th:href="@{/turnos/ver}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver a Agenda
+                </a>
+            </div>
+
+            <!-- Formulario oculto para redirección -->
+            <form id="formSeleccionDuenio" method="POST" th:action="@{/turnos/seleccionar-duenio}" style="display: none;">
+                <input type="hidden" name="duenioId" id="duenioIdHidden">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            </form>
+
+            <!-- Dueño -->
+            <div class="form-section">
+                <div class="section-title">
+                    <h3><i class="fas fa-user"></i> Seleccionar Dueño</h3>
+                    <p class="section-subtitle">Busca y selecciona el cliente para el turno</p>
+                </div>
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <button type="button" class="btn btn-primary" id="abrirModalDuenio">
+                            <i class="fas fa-search"></i> Buscar Dueño
+                        </button>
+
+                        <!-- Indicador de dueño seleccionado -->
+                        <div id="duenioSeleccionadoInfo" style="display: none; margin-top: 15px; padding: 12px; background: #f3f4f6; border-radius: 8px; border-left: 4px solid #3b82f6;">
+                            <div style="display: flex; justify-content: between; align-items: center;">
+                                <div>
+                                    <h4 style="margin: 0 0 5px 0; color: #1f2937;">
+                                        <i class="fas fa-user-check" style="color: #3b82f6;"></i>
+                                        Dueño seleccionado
+                                    </h4>
+                                    <p style="margin: 0; color: #6b7280;">
+                                        <span id="duenioNombreCompleto"></span> -
+                                        <span id="duenioCelular"></span>
+                                    </p>
+                                </div>
+                                <button type="button" id="cambiarDuenio" class="btn btn-secondary btn-sm" style="margin-left: 10px;">
+                                    <i class="fas fa-times"></i> Cambiar
+                                </button>
+                            </div>
+                        </div>
+
+                        <p style="margin-top: 10px; color: #6b7280; font-size: 0.875rem;">
+                            Selecciona un dueño para continuar con la creación del turno
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mensajes de error/success -->
+            <div th:if="${error}" class="alert alert-error" style="background: #fee2e2; border: 1px solid #fecaca; color: #dc2626; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1.5rem;">
+                <i class="fas fa-exclamation-circle"></i>
+                <span th:text="${error}"></span>
+            </div>
+
+            <div th:if="${success}" class="alert alert-success" style="background: #d1fae5; border: 1px solid #a7f3d0; color: #065f46; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1.5rem;">
+                <i class="fas fa-check-circle"></i>
+                <span th:text="${success}"></span>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- MODAL DUEÑOS -->
+<div id="modalDuenio" class="modal-busqueda" style="display:none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4><i class="fas fa-users"></i> Buscar Dueño</h4>
+            <button class="modal-close" id="cerrarModalDuenio"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-search">
+            <input type="text" id="buscarDuenioInput" placeholder="Buscar por nombre, apellido, celular o DNI">
+            <button id="ordenarDuenioAsc" class="btn-order"><i class="fas fa-sort-alpha-down"></i></button>
+            <button id="ordenarDuenioDesc" class="btn-order"><i class="fas fa-sort-alpha-up"></i></button>
+        </div>
+        <div class="modal-table-container">
+            <table class="modal-table" id="tablaDuenios">
+                <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Celular</th>
+                    <th>DNI</th>
+                    <th>Acción</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="duenio : ${duenios}" th:data-id="${duenio.idDuenio}"
+                    th:data-nombre="${duenio.nombreDuenio}" th:data-apellido="${duenio.apellido}"
+                    th:data-celular="${duenio.celular}" th:data-dni="${duenio.dni}">
+                    <td th:text="${duenio.nombreDuenio}">Juan</td>
+                    <td th:text="${duenio.apellido}">Pérez</td>
+                    <td th:text="${duenio.celular}">12345</td>
+                    <td th:text="${duenio.dni}">12345678</td>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-seleccionar-duenio">Seleccionar</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // SIDEBAR Y HEADER
+        const sidebar = document.getElementById('sidebar');
+        const toggleSidebar = document.getElementById('toggleSidebar');
+        const mobileToggle = document.getElementById('mobileToggle');
+        const overlay = document.getElementById('overlay');
+        const userMenuBtn = document.getElementById('userMenuBtn');
+        const userDropdown = document.getElementById('userDropdown');
+        const logoBtn = document.getElementById('logoBtn');
+
+        // Detectar si estamos en móvil
+        function isMobile() {
+            return window.innerWidth <= 768;
+        }
+
+        // 1. Toggle en desktop: colapsar sidebar
+        if (toggleSidebar) {
+            toggleSidebar.addEventListener('click', function () {
+                if (!isMobile()) {
+                    sidebar.classList.toggle('collapsed');
+                }
+            });
+        }
+
+        // 2. Toggle en móvil: mostrar/ocultar sidebar con overlay
+        if (mobileToggle && overlay) {
+            mobileToggle.addEventListener('click', function () {
+                sidebar.classList.add('show');
+                overlay.classList.add('active');
+            });
+
+            overlay.addEventListener('click', function () {
+                sidebar.classList.remove('show');
+                overlay.classList.remove('active');
+            });
+        }
+
+        // Logo vuelve al dashboard (opcional)
+        if (logoBtn) {
+            logoBtn.addEventListener('click', function () {
+                window.location.href = '/';
+            });
+        }
+
+        // 3. Dropdowns del sidebar
+        const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+        dropdownToggles.forEach(toggle => {
+            toggle.addEventListener('click', function (e) {
+                e.preventDefault();
+                const dropdown = this.nextElementSibling;
+                const arrow = this.querySelector('.dropdown-arrow');
+
+                // Cerrar otros
+                dropdownToggles.forEach(other => {
+                    if (other !== toggle) {
+                        other.nextElementSibling.classList.remove('show');
+                        other.querySelector('.dropdown-arrow').classList.remove('rotated');
+                    }
+                });
+
+                // Toggle actual
+                dropdown.classList.toggle('show');
+                arrow.classList.toggle('rotated');
+            });
+        });
+
+        // 4. Dropdown de usuario
+        if (userMenuBtn && userDropdown) {
+            userMenuBtn.addEventListener('click', function () {
+                userDropdown.classList.toggle('show');
+            });
+
+            document.addEventListener('click', function (e) {
+                if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+                    userDropdown.classList.remove('show');
+                }
+            });
+        }
+
+        // 5. Manejo de redimensionado
+        function handleResize() {
+            if (!isMobile()) {
+                sidebar.classList.remove('show');
+                if (overlay) overlay.classList.remove('active');
+            } else {
+                sidebar.classList.remove('collapsed'); // En móvil, no colapsar visualmente
+            }
+        }
+
+        window.addEventListener('resize', handleResize);
+        handleResize();
+
+        // -------- MODAL DUEÑO --------
+        const modalDuenio = document.getElementById('modalDuenio');
+        const abrirModalDuenio = document.getElementById('abrirModalDuenio');
+        const cerrarModalDuenio = document.getElementById('cerrarModalDuenio');
+        const buscarInputDuenio = document.getElementById('buscarDuenioInput');
+        const ordenarDuenioAsc = document.getElementById('ordenarDuenioAsc');
+        const ordenarDuenioDesc = document.getElementById('ordenarDuenioDesc');
+        const tablaDuenios = document.getElementById('tablaDuenios');
+
+        // --- BUSQUEDA Y ORDENAMIENTO DUEÑOS ---
+        function filtrarDuenios() {
+            if (!buscarInputDuenio || !tablaDuenios) return;
+
+            const filter = buscarInputDuenio.value.toLowerCase();
+            Array.from(tablaDuenios.querySelectorAll('tbody tr')).forEach(tr => {
+                const text = Array.from(tr.children).map(td => td.textContent.toLowerCase()).join(' ');
+                tr.style.display = text.includes(filter) ? '' : 'none';
+            });
+        }
+
+        if (buscarInputDuenio) {
+            buscarInputDuenio.addEventListener('input', filtrarDuenios);
+        }
+
+        function ordenarDuenios(colIndex, asc) {
+            if (!tablaDuenios) return;
+
+            const rows = Array.from(tablaDuenios.querySelectorAll('tbody tr'));
+            rows.sort((a, b) => {
+                const ta = a.children[colIndex].textContent.trim().toLowerCase();
+                const tb = b.children[colIndex].textContent.trim().toLowerCase();
+                return asc ? ta.localeCompare(tb) : tb.localeCompare(ta);
+            });
+            rows.forEach(row => tablaDuenios.querySelector('tbody').appendChild(row));
+        }
+
+        if (ordenarDuenioAsc) {
+            ordenarDuenioAsc.addEventListener('click', () => ordenarDuenios(0, true));
+        }
+
+        if (ordenarDuenioDesc) {
+            ordenarDuenioDesc.addEventListener('click', () => ordenarDuenios(0, false));
+        }
+
+        // --- ABRIR/CERRAR MODAL DUEÑO ---
+        if (abrirModalDuenio && modalDuenio) {
+            abrirModalDuenio.addEventListener('click', function() {
+                modalDuenio.style.display = 'flex';
+                if (buscarInputDuenio) {
+                    buscarInputDuenio.value = '';
+                    filtrarDuenios();
+                }
+            });
+        }
+
+        if (cerrarModalDuenio && modalDuenio) {
+            cerrarModalDuenio.addEventListener('click', function() {
+                modalDuenio.style.display = 'none';
+            });
+        }
+
+        // --- MANEJO VISUAL DE LA SELECCIÓN ---
+        const duenioSeleccionadoInfo = document.getElementById('duenioSeleccionadoInfo');
+        const duenioNombreCompleto = document.getElementById('duenioNombreCompleto');
+        const duenioCelular = document.getElementById('duenioCelular');
+        const cambiarDuenioBtn = document.getElementById('cambiarDuenio');
+
+        // Mostrar información del dueño seleccionado
+        function mostrarDuenioSeleccionado() {
+            if (!duenioSeleccionadoInfo || !duenioNombreCompleto || !duenioCelular) return;
+
+            const duenioSeleccionado = sessionStorage.getItem('duenioSeleccionado');
+            if (duenioSeleccionado) {
+                try {
+                    const duenio = JSON.parse(duenioSeleccionado);
+                    duenioNombreCompleto.textContent = `${duenio.nombre} ${duenio.apellido}`;
+                    duenioCelular.textContent = duenio.celular;
+                    duenioSeleccionadoInfo.style.display = 'block';
+                } catch (e) {
+                    console.error('Error parsing duenio data:', e);
+                    sessionStorage.removeItem('duenioSeleccionado');
+                }
+            }
+        }
+
+        // Al seleccionar dueño, guardar en sessionStorage
+        if (tablaDuenios) {
+            tablaDuenios.addEventListener('click', function(e) {
+                if (e.target.classList.contains('btn-seleccionar-duenio')) {
+                    const tr = e.target.closest('tr');
+                    const duenioData = {
+                        id: tr.getAttribute('data-id'),
+                        nombre: tr.getAttribute('data-nombre'),
+                        apellido: tr.getAttribute('data-apellido'),
+                        celular: tr.getAttribute('data-celular'),
+                        dni: tr.getAttribute('data-dni')
+                    };
+
+                    sessionStorage.setItem('duenioSeleccionado', JSON.stringify(duenioData));
+
+                    // Mostrar feedback visual
+                    e.target.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cargando...';
+                    e.target.disabled = true;
+
+                    // Enviar formulario
+                    const hiddenInput = document.getElementById('duenioIdHidden');
+                    const form = document.getElementById('formSeleccionDuenio');
+
+                    if (hiddenInput && form) {
+                        hiddenInput.value = duenioData.id;
+                        form.submit();
+                    }
+                }
+            });
+        }
+
+        // Botón para cambiar dueño
+        if (cambiarDuenioBtn && modalDuenio && duenioSeleccionadoInfo) {
+            cambiarDuenioBtn.addEventListener('click', function() {
+                sessionStorage.removeItem('duenioSeleccionado');
+                duenioSeleccionadoInfo.style.display = 'none';
+                modalDuenio.style.display = 'flex';
+            });
+        }
+
+        // Validación del formulario
+        const formSeleccionDuenio = document.getElementById('formSeleccionDuenio');
+        if (formSeleccionDuenio) {
+            formSeleccionDuenio.addEventListener('submit', function(e) {
+                const duenioId = document.getElementById('duenioIdHidden').value;
+                if (!duenioId) {
+                    e.preventDefault();
+                    alert('Por favor selecciona un dueño');
+                }
+            });
+        }
+
+        // Cerrar modal al hacer click fuera del contenido
+        if (modalDuenio) {
+            modalDuenio.addEventListener('click', function(e) {
+                if (e.target === modalDuenio) {
+                    modalDuenio.style.display = 'none';
+                }
+            });
+        }
+
+        // Cerrar modal con ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modalDuenio && modalDuenio.style.display === 'flex') {
+                modalDuenio.style.display = 'none';
+            }
+        });
+
+        // Mostrar dueño seleccionado al cargar la página
+        mostrarDuenioSeleccionado();
+    });
+</script>
+</body>
+</html>

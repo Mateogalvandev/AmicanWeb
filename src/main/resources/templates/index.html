@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amican - Estética Canina</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="app-container">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <button id="toggleSidebar" class="toggle-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <!-- Simplified navigation without horizontal dropdown -->
+            <div class="nav-group">
+                <button class="nav-item dropdown-toggle" data-section="agenda">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span class="nav-text">Agenda</span>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                </button>
+                <div class="nav-dropdown">
+                    <a th:href="@{/turnos/ver}" class="nav-subitem" data-section="agenda-manage">
+                        <i class="fas fa-list"></i>
+                        <span class="nav-text">Ver Agenda</span>
+                    </a>
+                    <a th:href="@{/turnos/crear}" class="nav-subitem" data-section="agenda-create">
+                        <i class="fas fa-plus"></i>
+                        <span class="nav-text">Nueva Cita</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Replaced Empleados with Clientes section -->
+            <div class="nav-group">
+                <button class="nav-item dropdown-toggle" data-section="clientes">
+                    <i class="fas fa-users"></i>
+                    <span class="nav-text">Clientes</span>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                </button>
+                <div class="nav-dropdown">
+                    <a th:href="@{/duenios/ver}" class="nav-subitem" data-section="clientes-list">
+                        <i class="fas fa-list"></i>
+                        <span class="nav-text">Ver Clientes</span>
+                    </a>
+                    <a th:href="@{/duenios/crear}" class="nav-subitem active" data-section="clientes-create">
+                        <i class="fas fa-user-plus"></i>
+                        <span class="nav-text">Crear Cliente</span>
+                    </a>
+                    <a th:href="@{/mascotas/ver}" class="nav-subitem" data-section="mascotas-list">
+                        <i class="fas fa-dog"></i>
+                        <span class="nav-text">Ver Mascotas</span>
+                    </a>
+                    <a th:href="@{/mascotas/crear}" class="nav-subitem" data-section="mascotas-create">
+                        <i class="fas fa-plus"></i>
+                        <span class="nav-text">Crear Mascota</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="system-info">
+                <p class="system-title">Sistema Amican</p>
+                <p class="system-version">Versión 1.0</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Overlay para móviles -->
+    <div id="overlay" class="overlay"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <button id="mobileToggle" class="mobile-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <button id="logoBtn" class="logo-container">
+                    <div class="logo-wrapper">
+                        <img th:src="@{/images/logo.png}" alt="Amican Logo" class="logo">
+                    </div>
+                    <div class="logo-info">
+                        <h1 class="logo-text">Amican</h1>
+                        <p class="logo-subtitle">Panel de administración</p>
+                    </div>
+                </button>
+            </div>
+            <div class="header-right">
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                </button>
+                <div class="user-menu">
+                    <button id="userMenuBtn" class="user-menu-btn">
+                        <div class="user-avatar">
+                            <span>AD</span>
+                        </div>
+                        <div class="user-info">
+                            <p class="user-name">Administrador</p>
+                            <p class="user-email">admin@amican.com</p>
+                        </div>
+                    </button>
+                    <div id="userDropdown" class="user-dropdown">
+                        <button class="dropdown-item" data-section="usuario">
+                            <i class="fas fa-user"></i> Mi Perfil
+                        </button>
+                        <button class="dropdown-item">
+                            <i class="fas fa-cog"></i> Configuración
+                        </button>
+                        <div class="dropdown-separator"></div>
+                        <button class="dropdown-item logout">
+                            <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <main class="content">
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="section active">
+                <div class="dashboard-welcome">
+                    <div class="welcome-content">
+                        <div class="welcome-icon">
+                            <i class="fas fa-dog"></i>
+                        </div>
+                        <div class="welcome-text">
+                            <h1 class="welcome-title">¡Bienvenido a Amican!</h1>
+                            <p class="welcome-subtitle">Tu centro de estética canina de confianza</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Aquí va el resto del contenido del dashboard -->
+            </section>
+        </main>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const sidebar = document.getElementById('sidebar');
+      const toggleSidebar = document.getElementById('toggleSidebar');
+      const mobileToggle = document.getElementById('mobileToggle');
+      const overlay = document.getElementById('overlay');
+      const userMenuBtn = document.getElementById('userMenuBtn');
+      const userDropdown = document.getElementById('userDropdown');
+
+      // Detectar si estamos en móvil
+      function isMobile() {
+        return window.innerWidth <= 768;
+      }
+
+      // 1. Toggle en desktop: colapsar sidebar
+      if (toggleSidebar) {
+        toggleSidebar.addEventListener('click', function () {
+          if (!isMobile()) {
+            sidebar.classList.toggle('collapsed');
+          }
+        });
+      }
+
+      // 2. Toggle en móvil: mostrar/ocultar sidebar con overlay
+      if (mobileToggle && overlay) {
+        mobileToggle.addEventListener('click', function () {
+          sidebar.classList.add('show');
+          overlay.classList.add('active');
+        });
+
+        overlay.addEventListener('click', function () {
+          sidebar.classList.remove('show');
+          overlay.classList.remove('active');
+        });
+      }
+
+      // ⚠️ NO CERRAR EL SIDEBAR AL HACER CLIC EN UN ENLACE
+      // Comentamos o eliminamos esta parte
+      /*
+      const navLinks = document.querySelectorAll('.nav-subitem, .nav-item');
+      navLinks.forEach(link => {
+        link.addEventListener('click', function () {
+          if (isMobile()) {
+            setTimeout(() => {
+              sidebar.classList.remove('show');
+              overlay.classList.remove('active');
+            }, 300);
+          }
+        });
+      });
+      */
+
+      // 3. Dropdowns del sidebar
+      const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+      dropdownToggles.forEach(toggle => {
+        toggle.addEventListener('click', function (e) {
+          e.preventDefault();
+          const dropdown = this.nextElementSibling;
+          const arrow = this.querySelector('.dropdown-arrow');
+
+          // Cerrar otros
+          dropdownToggles.forEach(other => {
+            if (other !== toggle) {
+              other.nextElementSibling.classList.remove('show');
+              other.querySelector('.dropdown-arrow').classList.remove('rotated');
+            }
+          });
+
+          // Toggle actual
+          dropdown.classList.toggle('show');
+          arrow.classList.toggle('rotated');
+        });
+      });
+
+      // 4. Dropdown de usuario
+      if (userMenuBtn && userDropdown) {
+        userMenuBtn.addEventListener('click', function () {
+          userDropdown.classList.toggle('show');
+        });
+
+        document.addEventListener('click', function (e) {
+          if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+            userDropdown.classList.remove('show');
+          }
+        });
+      }
+
+      // 5. Manejo de redimensionado
+      function handleResize() {
+        if (!isMobile()) {
+          sidebar.classList.remove('show');
+          overlay?.classList.remove('active');
+        } else {
+          sidebar.classList.remove('collapsed'); // En móvil, no colapsar visualmente
+        }
+      }
+
+      window.addEventListener('resize', handleResize);
+      handleResize();
+    });
+</script>
+</body>
+</html>

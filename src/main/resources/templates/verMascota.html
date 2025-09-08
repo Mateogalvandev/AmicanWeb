@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amican - Gestión de Mascotas</title>
+
+    <link rel="stylesheet" th:href="@{/css/verMascotas.css}"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Estilos mejorados para los botones de acción */
+        .actions-cell {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .btn-action {
+            border: none;
+            border-radius: 6px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-edit {
+            background-color: #3B82F6;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background-color: #2563EB;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-delete {
+            background-color: #EF4444;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background-color: #DC2626;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(220, 38, 38, 0.2);
+        }
+
+        .btn-action i {
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <!-- Overlay para móviles -->
+    <div id="overlay" class="overlay"></div>
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <button id="toggleSidebar" class="toggle-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <!-- Simplified navigation without horizontal dropdown -->
+            <div class="nav-group">
+                <button class="nav-item dropdown-toggle" data-section="agenda">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span class="nav-text">Agenda</span>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                </button>
+                <div class="nav-dropdown">
+                    <a th:href="@{/turnos/ver}" class="nav-subitem" data-section="agenda-manage">
+                        <i class="fas fa-list"></i>
+                        <span class="nav-text">Ver Agenda</span>
+                    </a>
+                    <a th:href="@{/turnos/crear}" class="nav-subitem" data-section="agenda-create">
+                        <i class="fas fa-plus"></i>
+                        <span class="nav-text">Nueva Cita</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Replaced Empleados with Clientes section -->
+            <div class="nav-group">
+                <button class="nav-item dropdown-toggle" data-section="clientes">
+                    <i class="fas fa-users"></i>
+                    <span class="nav-text">Clientes</span>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                </button>
+                <div class="nav-dropdown">
+                    <a th:href="@{/duenios/ver}" class="nav-subitem" data-section="clientes-list">
+                        <i class="fas fa-list"></i>
+                        <span class="nav-text">Ver Clientes</span>
+                    </a>
+                    <a th:href="@{/duenios/crear}" class="nav-subitem active" data-section="clientes-create">
+                        <i class="fas fa-user-plus"></i>
+                        <span class="nav-text">Crear Cliente</span>
+                    </a>
+                    <a th:href="@{/mascotas/ver}" class="nav-subitem" data-section="mascotas-list">
+                        <i class="fas fa-dog"></i>
+                        <span class="nav-text">Ver Mascotas</span>
+                    </a>
+                    <a th:href="@{/mascotas/crear}" class="nav-subitem" data-section="mascotas-create">
+                        <i class="fas fa-plus"></i>
+                        <span class="nav-text">Crear Mascota</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="system-info">
+                <p class="system-title">Sistema Amican</p>
+                <p class="system-version">Versión 1.0</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+
+                <button id="mobileToggle" class="mobile-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <a th:href="@{/}" class="logo-container" style="text-decoration: none; color: inherit;">
+                    <div class="logo-wrapper">
+                        <img th:src="@{/images/logo.png}" alt="Amican Logo" class="logo">
+                    </div>
+                    <div class="logo-info">
+                        <h1 class="logo-text">Amican</h1>
+                        <p class="logo-subtitle">Panel de administración</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="header-right">
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                </button>
+
+                <div class="user-menu">
+                    <button id="userMenuBtn" class="user-menu-btn">
+                        <div class="user-avatar">
+                            <span>AD</span>
+                        </div>
+                        <div class="user-info">
+                            <p class="user-name">Administrador</p>
+                            <p class="user-email">admin@amican.com</p>
+                        </div>
+                    </button>
+                    <div id="userDropdown" class="user-dropdown">
+                        <button class="dropdown-item" data-section="usuario">
+                            <i class="fas fa-user"></i>
+                            Mi Perfil
+                        </button>
+                        <button class="dropdown-item">
+                            <i class="fas fa-cog"></i>
+                            Configuración
+                        </button>
+                        <div class="dropdown-separator"></div>
+                        <button class="dropdown-item logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Cerrar sesión
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <main class="content">
+            <!-- Mascotas Section -->
+            <section class="mascotas-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-dog"></i> Gestión de Mascotas</h2>
+                    <div class="header-actions">
+                        <button id="newPetBtn" class="btn-primary">
+                            <i class="fas fa-plus"></i> Nueva Mascota
+                        </button>
+                        <button id="exportBtn" class="btn-secondary">
+                            <i class="fas fa-download"></i> Exportar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filtros y estadísticas -->
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-dog"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="totalMascotas">0</div>
+                            <div class="stat-label">Total Mascotas</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon small">
+                            <i class="fas fa-paw"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="mascotasPequenas">0</div>
+                            <div class="stat-label">Pequeñas</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon medium">
+                            <i class="fas fa-paw"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="mascotasMedianas">0</div>
+                            <div class="stat-label">Medianas</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon large">
+                            <i class="fas fa-paw"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="mascotasGrandes">0</div>
+                            <div class="stat-label">Grandes</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla de mascotas -->
+                <div class="table-container">
+                    <!-- Barra de herramientas -->
+                    <div class="table-toolbar">
+                        <div class="toolbar-left">
+                            <div class="search-container">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="mascotasSearch" placeholder="Buscar por nombre, raza, tamaño o dueño...">
+                            </div>
+                        </div>
+                        <div class="toolbar-right">
+                            <div class="items-per-page">
+                                <label for="itemsPerPage">Mostrar:</label>
+                                <select id="itemsPerPage">
+                                    <option value="5">5</option>
+                                    <option value="10" selected>10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabla -->
+                    <div class="table-wrapper">
+                        <table class="data-table" id="mascotasTable">
+                            <thead>
+                            <tr class="header-row">
+                                <th class="sortable" data-sort="idMascotas">
+                                    <div class="th-content">
+                                        <span>ID</span>
+                                        <i class="fas fa-sort sort-icon"></i>
+                                    </div>
+                                </th>
+                                <th class="sortable" data-sort="nombreMascota">
+                                    <div class="th-content">
+                                        <span>Nombre</span>
+                                        <i class="fas fa-sort sort-icon"></i>
+                                    </div>
+                                </th>
+                                <th class="sortable" data-sort="raza">
+                                    <div class="th-content">
+                                        <span>Raza</span>
+                                        <i class="fas fa-sort sort-icon"></i>
+                                    </div>
+                                </th>
+                                <th class="sortable" data-sort="tamanios">
+                                    <div class="th-content">
+                                        <span>Tamaño</span>
+                                        <i class="fas fa-sort sort-icon"></i>
+                                    </div>
+                                </th>
+                                <th class="sortable" data-sort="duenios">
+                                    <div class="th-content">
+                                        <span>Dueño</span>
+                                        <i class="fas fa-sort sort-icon"></i>
+                                    </div>
+                                </th>
+                                <th>Acciones</th>
+                            </tr>
+                            </thead>
+
+
+                            <tbody id="mascotasTableBody">
+                            <tr th:each="mascota : ${MascotaTabla}">
+                                <td th:text="${mascota.idMascotas}">ID</td>
+                                <td th:text="${mascota.nombreMascotas}">Nombre</td>
+                                <td th:text="${mascota.raza}">Raza</td>
+                                <td th:text="${mascota.tamanios}">Tamaño</td>
+
+                                <!-- Columna Dueños -->
+                                <td>
+                                    <div th:if="${mascota.dueniosList != null and !mascota.dueniosList.empty}">
+                                        <span th:text="${#strings.arrayJoin(mascota.dueniosList.![nombreDuenio + ' ' + apellido], ', ')}"></span>
+                                    </div>
+                                    <span th:unless="${mascota.dueniosList != null and !mascota.dueniosList.empty}"
+                                          style="color: #9ca3af; font-style: italic;">
+                                        Sin dueño
+                                    </span>
+                                </td>
+
+                                <!-- Acciones -->
+                                <td class="actions-cell">
+                                    <button class="btn-action btn-edit"
+                                            th:onclick="'window.location.href=\'/mascotas/editar/' + ${mascota.idMascotas} + '\''">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-action btn-delete"
+                                            th:onclick="'window.location.href=\'/mascotas/eliminar/' + ${mascota.idMascotas} + '\''">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- Mensaje si no hay mascotas -->
+                            <tr th:unless="${#lists.size(MascotaTabla) > 0}">
+                                <td colspan="6" style="text-align: center;">No hay mascotas registradas</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Paginación -->
+                    <div class="pagination-container">
+                        <div class="pagination-info">
+                            <span id="mascotasItemsInfo">Mostrando 1 a 10 de 0 mascotas</span>
+                        </div>
+                        <div class="pagination-controls">
+                            <button id="mascotasPrevBtn" class="pagination-btn" disabled>
+                                <i class="fas fa-chevron-left"></i>
+                                Anterior
+                            </button>
+                            <div class="page-numbers" id="pageNumbers">
+                                <!-- Los números de página se generan dinámicamente -->
+                            </div>
+                            <button id="mascotasNextBtn" class="pagination-btn" disabled>
+                                Siguiente
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+
+<script th:src="@{/js/verMascotas.js}"></script>
+<script>
+    function eliminarMascota(id) {
+    if (confirm('¿Estás seguro de que quieres eliminar esta mascota? Esta acción no se puede deshacer.')) {
+        // Obtener token CSRF
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+        // Crear formulario
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/mascotas/eliminar/' + id;
+
+        // Agregar inputs ocultos
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = '_csrf';
+        csrfInput.value = csrfToken;
+        form.appendChild(csrfInput);
+
+        const methodInput = document.createElement('input');
+        methodInput.type = 'hidden';
+        methodInput.name = '_method';
+        methodInput.value = 'DELETE';
+        form.appendChild(methodInput);
+
+        // Agregar al documento y enviar
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+</script>
+
+</body>
+</html>

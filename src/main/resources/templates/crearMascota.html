@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Mascota - Amican</title>
+    <link rel="stylesheet" th:href="@{/css/crearMascota.css}"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="app-container">
+    <!-- Overlay para móviles -->
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <button id="toggleSidebar" class="toggle-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <!-- Simplified navigation without horizontal dropdown -->
+            <div class="nav-group">
+                <button class="nav-item dropdown-toggle" data-section="agenda">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span class="nav-text">Agenda</span>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                </button>
+                <div class="nav-dropdown">
+                    <a th:href="@{/turnos/ver}" class="nav-subitem" data-section="agenda-manage">
+                        <i class="fas fa-list"></i>
+                        <span class="nav-text">Ver Agenda</span>
+                    </a>
+                    <a th:href="@{/turnos/crear}" class="nav-subitem" data-section="agenda-create">
+                        <i class="fas fa-plus"></i>
+                        <span class="nav-text">Nueva Cita</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Replaced Empleados with Clientes section -->
+            <div class="nav-group">
+                <button class="nav-item dropdown-toggle" data-section="clientes">
+                    <i class="fas fa-users"></i>
+                    <span class="nav-text">Clientes</span>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                </button>
+                <div class="nav-dropdown">
+                    <a th:href="@{/duenios/ver}" class="nav-subitem" data-section="clientes-list">
+                        <i class="fas fa-list"></i>
+                        <span class="nav-text">Ver Clientes</span>
+                    </a>
+                    <a th:href="@{/duenios/crear}" class="nav-subitem active" data-section="clientes-create">
+                        <i class="fas fa-user-plus"></i>
+                        <span class="nav-text">Crear Cliente</span>
+                    </a>
+                    <a th:href="@{/mascotas/ver}" class="nav-subitem" data-section="mascotas-list">
+                        <i class="fas fa-dog"></i>
+                        <span class="nav-text">Ver Mascotas</span>
+                    </a>
+                    <a th:href="@{/mascotas/crear}" class="nav-subitem" data-section="mascotas-create">
+                        <i class="fas fa-plus"></i>
+                        <span class="nav-text">Crear Mascota</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="system-info">
+                <p class="system-title">Sistema Amican</p>
+                <p class="system-version">Versión 1.0</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <button id="mobileToggle" class="mobile-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <a th:href="@{/}" class="logo-container" style="text-decoration: none; color: inherit;">
+                    <div class="logo-wrapper">
+                        <img th:src="@{/images/logo.png}" alt="Amican Logo" class="logo">
+                    </div>
+                    <div class="logo-info">
+                        <h1 class="logo-text">Amican</h1>
+                        <p class="logo-subtitle">Panel de administración</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="header-right">
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                </button>
+
+                <div class="user-menu">
+                    <button id="userMenuBtn" class="user-menu-btn">
+                        <div class="user-avatar">
+                            <span>AD</span>
+                        </div>
+                        <div class="user-info">
+                            <p class="user-name">Administrador</p>
+                            <p class="user-email">admin@amican.com</p>
+                        </div>
+                    </button>
+                    <div id="userDropdown" class="user-dropdown">
+                        <button class="dropdown-item" data-section="usuario">
+                            <i class="fas fa-user"></i>
+                            Mi Perfil
+                        </button>
+                        <button class="dropdown-item">
+                            <i class="fas fa-cog"></i>
+                            Configuración
+                        </button>
+                        <div class="dropdown-separator"></div>
+                        <button class="dropdown-item logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Cerrar sesión
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <main class="content">
+            <section class="section active">
+                <div class="section-header">
+                    <div class="header-content">
+                        <h2><i class="fas fa-plus-circle"></i> Registrar Nueva Mascota</h2>
+                        <p class="section-subtitle">Completa la información de la mascota para registrarla en el sistema</p>
+                    </div>
+                    <div class="header-actions">
+                        <a th:href="@{/mascotas/ver}" class="btn-secondary">
+                            <i class="fas fa-arrow-left"></i>
+                            <span class="btn-text">Volver a Mascotas</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Mostrar mensajes flash -->
+                <div th:if="${successMessage}" class="message-container">
+                    <div class="message success">
+                        <i class="fas fa-check-circle"></i>
+                        <span th:text="${successMessage}">¡Mascota registrada exitosamente!</span>
+                    </div>
+                </div>
+
+                <div th:if="${errorMessage}" class="message-container">
+                    <div class="message error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span th:text="${errorMessage}">Error al registrar la mascota. Por favor, intenta nuevamente.</span>
+                    </div>
+                </div>
+
+                <div class="form-container">
+                    <form id="mascotaForm" class="mascota-form" th:object="${mascotaDto}" th:action="@{/mascotas/crear}" method="post">
+                        <!-- Token CSRF -->
+                        <input type="hidden" th:if="${_csrf}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                        <div class="form-card">
+                            <div class="form-header">
+                                <div class="form-icon">
+                                    <i class="fas fa-dog"></i>
+                                </div>
+                                <div class="form-title">
+                                    <h3>Información de la Mascota</h3>
+                                    <p>Datos básicos del animal</p>
+                                </div>
+                            </div>
+
+                            <div class="form-body">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="nombreMascota" class="form-label">
+                                            <i class="fas fa-tag"></i>
+                                            Nombre de la Mascota *
+                                        </label>
+                                        <input
+                                                type="text"
+                                                id="nombreMascota"
+                                                th:field="*{nombreMascotas}"
+                                                class="form-input"
+                                                placeholder="Ej: Max, Luna, Rocky..."
+                                                required
+                                        >
+                                        <div class="input-feedback" th:if="${#fields.hasErrors('nombreMascotas')}"
+                                             th:errors="*{nombreMascotas}"></div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="raza" class="form-label">
+                                            <i class="fas fa-dna"></i>
+                                            Raza *
+                                        </label>
+                                        <input
+                                                type="text"
+                                                id="raza"
+                                                th:field="*{raza}"
+                                                class="form-input"
+                                                placeholder="Ej: Golden Retriever, Poodle, Bulldog..."
+                                                required
+                                        >
+                                        <div class="input-feedback" th:if="${#fields.hasErrors('raza')}"
+                                             th:errors="*{raza}"></div>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group full-width">
+                                        <label class="form-label">
+                                            <i class="fas fa-ruler-combined"></i>
+                                            Tamaño de la Mascota *
+                                        </label>
+                                        <div class="size-selector">
+                                            <input type="radio" th:field="*{tamanios}" id="pequenio" th:value="PEQUENIO" required>
+                                            <label for="pequenio" class="size-option">
+                                                <div class="size-icon">
+                                                    <i class="fas fa-dog" style="font-size: 1rem;"></i>
+                                                </div>
+                                                <div class="size-info">
+                                                    <span class="size-title">Pequeño</span>
+                                                    <span class="size-description">Hasta 10kg</span>
+                                                </div>
+                                            </label>
+
+                                            <input type="radio" th:field="*{tamanios}" id="mediano" th:value="MEDIANO" required>
+                                            <label for="mediano" class="size-option">
+                                                <div class="size-icon">
+                                                    <i class="fas fa-dog" style="font-size: 1.25rem;"></i>
+                                                </div>
+                                                <div class="size-info">
+                                                    <span class="size-title">Mediano</span>
+                                                    <span class="size-description">10kg - 25kg</span>
+                                                </div>
+                                            </label>
+
+                                            <input type="radio" th:field="*{tamanios}" id="grande" th:value="GRANDE" required>
+                                            <label for="grande" class="size-option">
+                                                <div class="size-icon">
+                                                    <i class="fas fa-dog" style="font-size: 1.5rem;"></i>
+                                                </div>
+                                                <div class="size-info">
+                                                    <span class="size-title">Grande</span>
+                                                    <span class="size-description">Más de 25kg</span>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="input-feedback" th:if="${#fields.hasErrors('tamanios')}"
+                                             th:errors="*{tamanios}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <a th:href="@{/mascotas/ver}" class="btn-secondary">
+                                <i class="fas fa-times"></i>
+                                <span class="btn-text">Cancelar</span>
+                            </a>
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-save"></i>
+                                <span class="btn-text">Registrar Mascota</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+    <div id="overlay" class="overlay"></div>
+</div>
+
+<script th:src="@{/js/crearMascota.js}"></script>
+</body>
+</html>

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleccionar Mascotas - Amican</title>
+    <link rel="stylesheet" th:href="@{/css/crearAgenda.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="app-container">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <button id="toggleSidebar" class="toggle-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <!-- Simplified navigation without horizontal dropdown -->
+            <div class="nav-group">
+                <button class="nav-item dropdown-toggle" data-section="agenda">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span class="nav-text">Agenda</span>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                </button>
+                <div class="nav-dropdown">
+                    <a th:href="@{/turnos/ver}" class="nav-subitem" data-section="agenda-manage">
+                        <i class="fas fa-list"></i>
+                        <span class="nav-text">Ver Agenda</span>
+                    </a>
+                    <a th:href="@{/turnos/crear}" class="nav-subitem" data-section="agenda-create">
+                        <i class="fas fa-plus"></i>
+                        <span class="nav-text">Nueva Cita</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Replaced Empleados with Clientes section -->
+            <div class="nav-group">
+                <button class="nav-item dropdown-toggle" data-section="clientes">
+                    <i class="fas fa-users"></i>
+                    <span class="nav-text">Clientes</span>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                </button>
+                <div class="nav-dropdown">
+                    <a th:href="@{/duenios/ver}" class="nav-subitem" data-section="clientes-list">
+                        <i class="fas fa-list"></i>
+                        <span class="nav-text">Ver Clientes</span>
+                    </a>
+                    <a th:href="@{/duenios/crear}" class="nav-subitem active" data-section="clientes-create">
+                        <i class="fas fa-user-plus"></i>
+                        <span class="nav-text">Crear Cliente</span>
+                    </a>
+                    <a th:href="@{/mascotas/ver}" class="nav-subitem" data-section="mascotas-list">
+                        <i class="fas fa-dog"></i>
+                        <span class="nav-text">Ver Mascotas</span>
+                    </a>
+                    <a th:href="@{/mascotas/crear}" class="nav-subitem" data-section="mascotas-create">
+                        <i class="fas fa-plus"></i>
+                        <span class="nav-text">Crear Mascota</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="system-info">
+                <p class="system-title">Sistema Amican</p>
+                <p class="system-version">Versión 1.0</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Overlay para móviles -->
+    <div id="overlay" class="overlay"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <button id="mobileToggle" class="mobile-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <button id="logoBtn" class="logo-container">
+                    <div class="logo-wrapper">
+                        <img th:src="@{/images/logo.png}" alt="Amican Logo" class="logo">
+                    </div>
+                    <div class="logo-info">
+                        <h1 class="logo-text">Amican</h1>
+                        <p class="logo-subtitle">Panel de administración</p>
+                    </div>
+                </button>
+            </div>
+            <div class="header-right">
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                </button>
+                <div class="user-menu">
+                    <button id="userMenuBtn" class="user-menu-btn">
+                        <div class="user-avatar">
+                            <span>AD</span>
+                        </div>
+                        <div class="user-info">
+                            <p class="user-name">Administrador</p>
+                            <p class="user-email">admin@amican.com</p>
+                        </div>
+                    </button>
+                    <div id="userDropdown" class="user-dropdown">
+                        <button class="dropdown-item" data-section="usuario">
+                            <i class="fas fa-user"></i> Mi Perfil
+                        </button>
+                        <button class="dropdown-item">
+                            <i class="fas fa-cog"></i> Configuración
+                        </button>
+                        <div class="dropdown-separator"></div>
+                        <button class="dropdown-item logout">
+                            <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="content">
+            <div class="section-header">
+                <h2><i class="fas fa-calendar-plus"></i> Crear Turno</h2>
+                <a th:href="@{/turnos/crear}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver a dueños
+                </a>
+            </div>
+
+            <form th:action="@{/turnos/crear}" method="post" th:object="${turnoDto}">
+                <!-- Hidden field para duenioId -->
+                <input type="hidden" name="duenioId" th:value="${duenio.idDuenio}">
+
+                <div class="form-section">
+                    <div class="section-title">
+                        <h3><i class="fas fa-user"></i> Dueño Seleccionado</h3>
+                        <p class="section-subtitle">Información del cliente</p>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <div class="field-value" style="padding: 0.75rem; background: #f9fafb; border-radius: 0.5rem;">
+                                <strong th:text="${duenio.nombreDuenio}"></strong>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Apellido</label>
+                            <div class="field-value" style="padding: 0.75rem; background: #f9fafb; border-radius: 0.5rem;">
+                                <strong th:text="${duenio.apellido}"></strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Teléfono</label>
+                            <div class="field-value" style="padding: 0.75rem; background: #f9fafb; border-radius: 0.5rem;">
+                                <span th:text="${duenio.celular}"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>DNI</label>
+                            <div class="field-value" style="padding: 0.75rem; background: #f9fafb; border-radius: 0.5rem;">
+                                <span th:text="${duenio.dni}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="section-title">
+                        <h3><i class="fas fa-dog"></i> Seleccionar Mascotas</h3>
+                        <p class="section-subtitle">Elige las mascotas para el turno</p>
+                    </div>
+
+                    <div class="mascotas-container">
+                        <div th:each="mascota : ${mascotas}" class="mascota-item"
+                             style="padding: 1.5rem; border: 1px solid #e5e7eb; border-radius: 0.75rem; margin-bottom: 1rem; background: white;">
+
+                            <label style="display: flex; align-items: center; gap: 1rem; cursor: pointer;">
+                                <input type="checkbox"
+                                       name="mascotaIds"
+                                       th:value="${mascota.idMascotas}"
+                                       style="width: 20px; height: 20px;">
+
+                                <div style="flex: 1;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                                        <strong th:text="${mascota.nombreMascotas}" style="font-size: 1.1rem;"></strong>
+                                        <span th:if="${mascota.tamanios}" th:text="${mascota.tamanios}"
+                                              style="background: #60a5fa; color: white; padding: 0.25rem 0.5rem; border-radius: 0.375rem; font-size: 0.75rem;"></span>
+                                    </div>
+                                    <div style="color: #6b7280;">
+                                        <span th:text="${mascota.raza}"></span>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div th:if="${mascotas.isEmpty()}" class="alert alert-info"
+                             style="background: #dbeafe; border: 1px solid #93c5fd; color: #1e40af; padding: 1.5rem; border-radius: 0.75rem; text-align: center;">
+                            <i class="fas fa-info-circle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                            <h4 style="margin: 0 0 0.5rem 0;">No hay mascotas registradas</h4>
+                            <p style="margin: 0; color: #374151;">Este dueño no tiene mascotas registradas en el sistema.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="section-title">
+                        <h3><i class="fas fa-calendar-clock"></i> Fecha y Hora del Turno</h3>
+                        <p class="section-subtitle">Selecciona la fecha y hora para el turno</p>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fecha">Fecha y Hora *</label>
+                            <input type="datetime-local" id="fecha" name="fecha" th:field="*{fecha}" required
+                                   style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-size: 1rem;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="history.back()">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary" th:disabled="${mascotas.isEmpty()}">
+                        <i class="fas fa-calendar-check"></i> Crear Turno
+                    </button>
+                </div>
+            </form>
+
+            <!-- Mensajes de error/success -->
+            <div th:if="${error}" class="alert alert-error"
+                 style="background: #fee2e2; border: 1px solid #fecaca; color: #dc2626; padding: 1rem; border-radius: 0.5rem; margin: 1.5rem 0;">
+                <i class="fas fa-exclamation-circle"></i>
+                <span th:text="${error}"></span>
+            </div>
+
+            <div th:if="${success}" class="alert alert-success"
+                 style="background: #d1fae5; border: 1px solid #a7f3d0; color: #065f46; padding: 1rem; border-radius: 0.5rem; margin: 1.5rem 0;">
+                <i class="fas fa-check-circle"></i>
+                <span th:text="${success}"></span>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // SIDEBAR Y HEADER
+        const sidebar = document.getElementById('sidebar');
+        const toggleSidebar = document.getElementById('toggleSidebar');
+        const mobileToggle = document.getElementById('mobileToggle');
+        const overlay = document.getElementById('overlay');
+        const userMenuBtn = document.getElementById('userMenuBtn');
+        const userDropdown = document.getElementById('userDropdown');
+        const logoBtn = document.getElementById('logoBtn');
+
+        // Detectar si estamos en móvil
+        function isMobile() {
+            return window.innerWidth <= 768;
+        }
+
+        // 1. Toggle en desktop: colapsar sidebar
+        if (toggleSidebar) {
+            toggleSidebar.addEventListener('click', function () {
+                if (!isMobile()) {
+                    sidebar.classList.toggle('collapsed');
+                }
+            });
+        }
+
+        // 2. Toggle en móvil: mostrar/ocultar sidebar con overlay
+        if (mobileToggle && overlay) {
+            mobileToggle.addEventListener('click', function () {
+                sidebar.classList.add('show');
+                overlay.classList.add('active');
+            });
+
+            overlay.addEventListener('click', function () {
+                sidebar.classList.remove('show');
+                overlay.classList.remove('active');
+            });
+        }
+
+        // Logo vuelve al dashboard (opcional)
+        if (logoBtn) {
+            logoBtn.addEventListener('click', function () {
+                window.location.href = '/';
+            });
+        }
+
+        // 3. Dropdowns del sidebar
+        const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+        dropdownToggles.forEach(toggle => {
+            toggle.addEventListener('click', function (e) {
+                e.preventDefault();
+                const dropdown = this.nextElementSibling;
+                const arrow = this.querySelector('.dropdown-arrow');
+
+                // Cerrar otros
+                dropdownToggles.forEach(other => {
+                    if (other !== toggle) {
+                        other.nextElementSibling.classList.remove('show');
+                        other.querySelector('.dropdown-arrow').classList.remove('rotated');
+                    }
+                });
+
+                // Toggle actual
+                dropdown.classList.toggle('show');
+                arrow.classList.toggle('rotated');
+            });
+        });
+
+        // 4. Dropdown de usuario
+        if (userMenuBtn && userDropdown) {
+            userMenuBtn.addEventListener('click', function () {
+                userDropdown.classList.toggle('show');
+            });
+
+            document.addEventListener('click', function (e) {
+                if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+                    userDropdown.classList.remove('show');
+                }
+            });
+        }
+
+        // 5. Manejo de redimensionado
+        function handleResize() {
+            if (!isMobile()) {
+                sidebar.classList.remove('show');
+                overlay?.classList.remove('active');
+            } else {
+                sidebar.classList.remove('collapsed');
+            }
+        }
+
+        window.addEventListener('resize', handleResize);
+        handleResize();
+
+        // 6. Validación del formulario
+        const form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const checkboxes = document.querySelectorAll('input[name="mascotaIds"]:checked');
+                if (checkboxes.length === 0) {
+                    e.preventDefault();
+                    alert('Debes seleccionar al menos una mascota para continuar');
+                    return false;
+                }
+
+                const fechaInput = document.getElementById('fecha');
+                if (!fechaInput.value) {
+                    e.preventDefault();
+                    alert('Debes seleccionar una fecha y hora para el turno');
+                    return false;
+                }
+            });
+        }
+
+        // 7. Mejorar experiencia de checkboxes
+        const checkboxes = document.querySelectorAll('input[name="mascotaIds"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const item = this.closest('.mascota-item');
+                if (this.checked) {
+                    item.style.borderColor = '#3b82f6';
+                    item.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
+                } else {
+                    item.style.borderColor = '#e5e7eb';
+                    item.style.boxShadow = 'none';
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

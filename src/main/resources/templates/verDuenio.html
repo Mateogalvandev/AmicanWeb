@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amican - Gestión de Clientes</title>
+    <link rel="stylesheet" th:href="@{/css/verDuenio.css}"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Estilos mejorados para los botones de acción - igual que en mascotas */
+        .actions-cell {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .btn-action {
+            border: none;
+            border-radius: 6px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-edit {
+            background-color: #3B82F6;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background-color: #2563EB;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-delete {
+            background-color: #EF4444;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background-color: #DC2626;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(220, 38, 38, 0.2);
+        }
+
+        .btn-action i {
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <!-- Overlay para móviles -->
+    <div id="overlay" class="overlay"></div>
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <button id="toggleSidebar" class="toggle-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <!-- Simplified navigation without horizontal dropdown -->
+            <div class="nav-group">
+                <button class="nav-item dropdown-toggle" data-section="agenda">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span class="nav-text">Agenda</span>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                </button>
+                <div class="nav-dropdown">
+                    <a th:href="@{/turnos/ver}" class="nav-subitem" data-section="agenda-manage">
+                        <i class="fas fa-list"></i>
+                        <span class="nav-text">Ver Agenda</span>
+                    </a>
+                    <a th:href="@{/turnos/crear}" class="nav-subitem" data-section="agenda-create">
+                        <i class="fas fa-plus"></i>
+                        <span class="nav-text">Nueva Cita</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Replaced Empleados with Clientes section -->
+            <div class="nav-group">
+                <button class="nav-item dropdown-toggle" data-section="clientes">
+                    <i class="fas fa-users"></i>
+                    <span class="nav-text">Clientes</span>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                </button>
+                <div class="nav-dropdown">
+                    <a th:href="@{/duenios/ver}" class="nav-subitem" data-section="clientes-list">
+                        <i class="fas fa-list"></i>
+                        <span class="nav-text">Ver Clientes</span>
+                    </a>
+                    <a th:href="@{/duenios/crear}" class="nav-subitem active" data-section="clientes-create">
+                        <i class="fas fa-user-plus"></i>
+                        <span class="nav-text">Crear Cliente</span>
+                    </a>
+                    <a th:href="@{/mascotas/ver}" class="nav-subitem" data-section="mascotas-list">
+                        <i class="fas fa-dog"></i>
+                        <span class="nav-text">Ver Mascotas</span>
+                    </a>
+                    <a th:href="@{/mascotas/crear}" class="nav-subitem" data-section="mascotas-create">
+                        <i class="fas fa-plus"></i>
+                        <span class="nav-text">Crear Mascota</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="system-info">
+                <p class="system-title">Sistema Amican</p>
+                <p class="system-version">Versión 1.0</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <button id="mobileToggle" class="mobile-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <a th:href="@{/}" class="logo-container" style="text-decoration: none; color: inherit;">
+                    <div class="logo-wrapper">
+                        <img th:src="@{/images/logo.png}" alt="Amican Logo" class="logo">
+                    </div>
+                    <div class="logo-info">
+                        <h1 class="logo-text">Amican</h1>
+                        <p class="logo-subtitle">Panel de administración</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="header-right">
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                </button>
+
+                <div class="user-menu">
+                    <button id="userMenuBtn" class="user-menu-btn">
+                        <div class="user-avatar">
+                            <span>AD</span>
+                        </div>
+                        <div class="user-info">
+                            <p class="user-name">Administrador</p>
+                            <p class="user-email">admin@amican.com</p>
+                        </div>
+                    </button>
+                    <div id="userDropdown" class="user-dropdown">
+                        <button class="dropdown-item" data-section="usuario">
+                            <i class="fas fa-user"></i>
+                            Mi Perfil
+                        </button>
+                        <button class="dropdown-item">
+                            <i class="fas fa-cog"></i>
+                            Configuración
+                        </button>
+                        <div class="dropdown-separator"></div>
+                        <button class="dropdown-item logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Cerrar sesión
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <main class="content">
+            <!-- Dueños Section -->
+            <section class="clientes-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-users"></i> Gestión de Dueños</h2>
+                    <div class="header-actions">
+                        <button id="newClientBtn" class="btn-primary">
+                            <i class="fas fa-plus"></i> Nuevo Dueño
+                        </button>
+                        <button id="exportBtn" class="btn-secondary">
+                            <i class="fas fa-download"></i> Exportar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabla de dueños -->
+                <div class="table-container">
+                    <!-- Barra de herramientas -->
+                    <div class="table-toolbar">
+                        <div class="toolbar-left">
+                            <div class="search-container">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="clientesSearch" placeholder="Buscar por nombre, apellido, teléfono...">
+                            </div>
+                        </div>
+                        <div class="toolbar-right">
+                            <div class="items-per-page">
+                                <label for="itemsPerPage">Mostrar:</label>
+                                <select id="itemsPerPage">
+                                    <option value="5">5</option>
+                                    <option value="10" selected>10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabla -->
+                    <div class="table-wrapper">
+                        <table class="data-table" id="clientesTable">
+                            <thead>
+                            <tr class="header-row">
+                                <th class="sortable" data-sort="idDuenio">
+                                    <div class="th-content">
+                                        <span>ID</span>
+                                        <i class="fas fa-sort sort-icon"></i>
+                                    </div>
+                                </th>
+                                <th class="sortable" data-sort="nombreDuenio">
+                                    <div class="th-content">
+                                        <span>Nombre</span>
+                                        <i class="fas fa-sort sort-icon"></i>
+                                    </div>
+                                </th>
+                                <th class="sortable" data-sort="apellido">
+                                    <div class="th-content">
+                                        <span>Apellido</span>
+                                        <i class="fas fa-sort sort-icon"></i>
+                                    </div>
+                                </th>
+                                <th class="sortable" data-sort="celular">
+                                    <div class="th-content">
+                                        <span>Teléfono</span>
+                                        <i class="fas fa-sort sort-icon"></i>
+                                    </div>
+                                </th>
+                                <th class="sortable" data-sort="dni">
+                                    <div class="th-content">
+                                        <span>DNI</span>
+                                        <i class="fas fa-sort sort-icon"></i>
+                                    </div>
+                                </th>
+                                <th>Acciones</th>
+                            </tr>
+                            </thead>
+                            <tbody id="clientesTableBody">
+                            <!-- Aquí irían los datos de Thymeleaf -->
+                            <tr th:each="duenio : ${duenios}">
+                                <td th:text="${duenio.idDuenio}">ID</td>
+                                <td th:text="${duenio.nombreDuenio}">Nombre</td>
+                                <td th:text="${duenio.apellido}">Apellido</td>
+                                <td th:text="${duenio.celular}">Teléfono</td>
+                                <td th:text="${duenio.dni}">DNI</td>
+                                <td class="actions-cell">
+                                    <button class="btn-action btn-edit" th:onclick="'window.location.href=\'/duenios/editar/' + ${duenio.idDuenio} + '\''">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-action btn-delete" th:onclick="'if(confirm(\'¿Estás seguro de eliminar este dueño?\')) window.location.href=\'/duenios/eliminar/' + ${duenio.idDuenio} + '\''">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- Mensaje si no hay dueños -->
+                            <tr th:unless="${#lists.size(duenios) > 0}">
+                                <td colspan="6" style="text-align: center;">No hay dueños registrados</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Paginación -->
+                    <div class="pagination-container">
+                        <div class="pagination-info">
+                            <span id="clientesItemsInfo">Mostrando 1 a 10 de 0 dueños</span>
+                        </div>
+                        <div class="pagination-controls">
+                            <button id="clientesPrevBtn" class="pagination-btn" disabled>
+                                <i class="fas fa-chevron-left"></i>
+                                Anterior
+                            </button>
+                            <div class="page-numbers" id="pageNumbers">
+                                <!-- Los números de página se generan dinámicamente -->
+                            </div>
+                            <button id="clientesNextBtn" class="pagination-btn" disabled>
+                                Siguiente
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+
+<script th:src="@{/js/verDuenio.js}"></script>
+</body>
+</html>
